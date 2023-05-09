@@ -18,38 +18,36 @@ exports.register = async (req, res) => {
     // בדיקה שמייל תקין
 
     if (!username || !email || !password) {
-      return res.status(400).json({ message: "נא למלא את כל השדות." });
+      return res.status(400).json({ message: "You must fill all the fields." });
     }
 
     if (username.length < 2) {
       return res
         .status(400)
-        .json({ message: "שם המשתמש צריך להכיל לפחות 2 תווים." });
+        .json({ message: "Username has to be at least 2 characters." });
     }
 
     if (password.length < 8) {
       return res
         .status(400)
-        .json({ message: "הסיסמה צריכה להכיל לפחות 8 תווים." });
+        .json({ message: "Password has to be at least 8 characters." });
     }
 
     //test email
     if (!validator.validate(email)) {
-      return res.status(400).json({ message: "המייל שהוזן אינו תקין." });
+      return res.status(400).json({ message: "Invalid email address." });
     }
 
     const checkUsername = await User.findOne({ username });
     if (checkUsername) {
-      return res
-        .status(400)
-        .json({ message: "שם המשתמש כבר קיים, נא לבחור שם אחר." });
+      return res.status(400).json({ message: "Username already exists." });
     }
 
     const checkEmail = await User.findOne({ email });
     if (checkEmail) {
       return res
         .status(400)
-        .json({ message: "כתובת מייל כבר קיימת, נא לבחור מייל אחר." });
+        .json({ message: "Email adress already exists, try another email." });
     }
 
     // להצפין את  הסיסמה
@@ -72,7 +70,7 @@ exports.register = async (req, res) => {
     return res.status(400).json({ message: error.message });
   }
   if (!user) {
-    return res.status(500).json({ message: "משתמש לא נוצר, התחרשה שגיאה." });
+    return res.status(500).json({ message: "Error. User not created." });
   }
-  return res.status(201).json({ message: "הרישום בוצע בהצלחה", user });
+  return res.status(201).json({ message: "User created successfully.", user });
 };

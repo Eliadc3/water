@@ -1,52 +1,51 @@
 const mongoose = require("mongoose");
 
 const waterSchema = new mongoose.Schema({
-  time: {
+  Time: {
     type: String,
   },
   CIT_01: {
-    type: Number,
+    type: String,
   },
   TIT_01: {
-    type: Number,
+    type: String,
   },
   PIT_03: {
-    type: Number,
+    type: String,
   },
   PIT_04: {
-    type: Number,
+    type: String,
   },
   Stage1_Pressure_Drop: {
-    type: Number,
+    type: String,
   },
   PIT_05: {
-    type: Number,
+    type: String,
   },
   PIT_06: {
-    type: Number,
+    type: String,
   },
   Stage2_Pressure_Drop: {
-    type: Number,
+    type: String,
   },
   FIT_03: {
-    type: Number,
+    type: String,
   },
   CIT_02: {
-    type: Number,
+    type: String,
   },
   PIT_07: {
-    type: Number,
+    type: String,
   },
   FIT_02: {
-    type: Number,
+    type: String,
   },
   FIT_01: {
-    type: Number,
+    type: String,
   },
 });
 
 // create a model from the schema.
-const Water = mongoose.model("Water", waterSchema);
+const WaterModel = mongoose.model("PreData", waterSchema);
 
-// export the Song model so index.js will be able to use it
-module.exports = Water;
+module.exports = WaterModel;

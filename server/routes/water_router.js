@@ -1,6 +1,11 @@
 const router = require("express").Router();
-const water = require("../controllers/water_controller");
+const uploadController = require("../controllers/upload_controller.js");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
-router.post("/upload", water.upload);
-
+router.post(
+  "/uploadCSVdata",
+  upload.single("file"),
+  uploadController.uploadCSVdata
+);
 module.exports = router;

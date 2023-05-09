@@ -8,14 +8,14 @@ const URI = process.env.URI;
 const PORT = process.env.PORT;
 const app = express();
 app.use(express.json());
-
-app.use("/user", user_router);
-app.use("/water", water_router);
-
 mongoose
   .connect(URI)
   .then(() => console.log("Connected to DB"))
   .catch((err) => console.log(err.message));
+
+app.use("/user", user_router);
+app.use("/water", water_router);
+//app.use("/uploads", express.static("uploads"));
 
 app.listen(PORT || 5000, () => {
   console.log("Connection successfully");
