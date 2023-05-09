@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const User = require("../models/User_model");
 const validator = require("email-validator");
 const bcrypt = require("bcrypt");
 
