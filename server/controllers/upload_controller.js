@@ -4,6 +4,8 @@ const multer = require("multer");
 
 exports.uploadCSVdata = async (req, res) => {
   try {
+    // Upload:
+    // --- destination (where the file will save)
     const fileStorageEngine = multer.diskStorage({
       destination: (req, file, cb) => {
         cb(null, "./uploads");
@@ -12,6 +14,8 @@ exports.uploadCSVdata = async (req, res) => {
         cb(null, Date.now() + "--" + file.originalname);
       },
     });
+
+    // --- create a property that saves the uploaded file and check if the file's format is csv
     const upload = multer({
       storage: fileStorageEngine,
       fileFilter: (req, file, cb) => {
@@ -27,25 +31,29 @@ exports.uploadCSVdata = async (req, res) => {
     if (!file) {
       return res.status(400).send("Please upload a CSV file.");
     }
+    // Create an objects array from the csv file data
     const JsonArray = await csv().fromFile(file.path);
 
+    // Create data object from csv file data
     const dataRow = JsonArray.map((jsonObj) => ({
       Time: jsonObj.Time,
-      CIT_01: jsonObj.CIT_01,
-      TIT_01: jsonObj.TIT_01,
-      PIT_03: jsonObj.PIT_03,
-      PIT_04: jsonObj.PIT_04,
-      Stage1_Pressure_Drop: jsonObj.Stage1_Pressure_Drop,
-      PIT_05: jsonObj.PIT_05,
-      PIT_06: jsonObj.PIT_06,
-      Stage2_Pressure_Drop: jsonObj.Stage2_Pressure_Drop,
-      FIT_03: jsonObj.FIT_03,
-      CIT_02: jsonObj.CIT_02,
-      PIT_07: jsonObj.PIT_07,
-      FIT_02: jsonObj.FIT_02,
-      FIT_01: jsonObj.FIT_01,
+      CIT_01: parseFloat(jsonObj.CIT_01).toFixed(2),
+      TIT_01: parseFloat(jsonObj.TIT_01).toFixed(2),
+      PIT_03: parseFloat(jsonObj.PIT_03).toFixed(2),
+      PIT_04: parseFloat(jsonObj.PIT_04).toFixed(2),
+      Stage1_Pressure_Drop: parseFloat(jsonObj.Stage1_Pressure_Drop).toFixed(2),
+      PIT_05: parseFloat(jsonObj.PIT_05).toFixed(2),
+      PIT_06: parseFloat(jsonObj.PIT_06).toFixed(2),
+      Stage2_Pressure_Drop: parseFloat(jsonObj.Stage2_Pressure_Drop).toFixed(2),
+      FIT_03: parseFloat(jsonObj.FIT_03).toFixed(2),
+      CIT_02: parseFloat(jsonObj.CIT_02).toFixed(2),
+      PIT_07: parseFloat(jsonObj.PIT_07).toFixed(2),
+      FIT_02: parseFloat(jsonObj.FIT_02).toFixed(2),
+      FIT_01: parseFloat(jsonObj.FIT_01).toFixed(2),
+      // start the manipulation
     }));
 
+    // Save all the data from the csv file in object by the schema
     const result = await WaterModel.insertMany(dataRow);
     res.status(201).json({ message: "Data successfully saved.", result });
   } catch (error) {
