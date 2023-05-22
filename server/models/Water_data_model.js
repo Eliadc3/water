@@ -1,47 +1,110 @@
 const mongoose = require("mongoose");
 
+// const waterSchema = new mongoose.Schema({
+//   Time: {
+//     type: String,
+//   },
+//   CIT_01: {
+//     type: String,
+//   },
+//   TIT_01: {
+//     type: String,
+//   },
+//   PIT_03: {
+//     type: String,
+//   },
+//   PIT_04: {
+//     type: String,
+//   },
+//   Stage1_Pressure_Drop: {
+//     type: String,
+//   },
+//   PIT_05: {
+//     type: String,
+//   },
+//   PIT_06: {
+//     type: String,
+//   },
+//   Stage2_Pressure_Drop: {
+//     type: String,
+//   },
+//   FIT_03: {
+//     type: String,
+//   },
+//   CIT_02: {
+//     type: String,
+//   },
+//   PIT_07: {
+//     type: String,
+//   },
+//   FIT_02: {
+//     type: String,
+//   },
+//   FIT_01: {
+//     type: String,
+//   },
+// });
+
 const waterSchema = new mongoose.Schema({
-  Time: {
-    type: String,
+  Stage1_concentrate_flow_m3h: {
+    type: Number,
   },
-  CIT_01: {
-    type: String,
+  Stage2_concentrate_factor: {
+    type: Number,
   },
-  TIT_01: {
-    type: String,
+  Stage1_feed_TDS_mgl: {
+    type: Number,
   },
-  PIT_03: {
-    type: String,
+  TCF: {
+    type: Number,
   },
-  PIT_04: {
-    type: String,
+  Permeate_TDS_mgl: {
+    type: Number,
   },
-  Stage1_Pressure_Drop: {
-    type: String,
+  Stage1_pressure_drop_bar: {
+    type: Number,
   },
-  PIT_05: {
-    type: String,
+  Stage1_average_flow_m3h: {
+    type: Number,
   },
-  PIT_06: {
-    type: String,
+  Stage2_pressure_drop_bar: {
+    type: Number,
   },
-  Stage2_Pressure_Drop: {
-    type: String,
+  Stage2_average_flow_m3h: {
+    type: Number,
   },
-  FIT_03: {
-    type: String,
+  Stage1_concentrate_factor: {
+    type: Number,
   },
-  CIT_02: {
-    type: String,
+  Salt_rejection: {
+    type: Number,
   },
-  PIT_07: {
-    type: String,
+  Stage1_normalized_pressure_drop_bar: {
+    type: Number,
   },
-  FIT_02: {
-    type: String,
+  Stage2_normalized_pressure_drop_bar: {
+    type: Number,
   },
-  FIT_01: {
-    type: String,
+  Stage1_concentrate_TDS_mgl: {
+    type: Number,
+  },
+  Salt_passage: {
+    type: Number,
+  },
+  Stage1_aNDP: {
+    type: Number,
+  },
+  Stage2_aNDP: {
+    type: Number,
+  },
+  Normalized_salt_rejection: {
+    type: Number,
+  },
+  Stage1_baseline_net_permeate_flow: {
+    type: Number,
+  },
+  Stage2_baseline_net_permeate_flow: {
+    type: Number,
   },
 });
 
