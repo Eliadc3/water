@@ -3,11 +3,27 @@ const User = require("../models/User_model");
 const validator = require("email-validator");
 const bcrypt = require("bcrypt");
 
+// Middleware function to check admin access
+exports.isAdmin = (req, res, next) => {
+  // Check if the current user is an admin
+  if (req.user && req.user.isAdmin) {
+    // User is an admin, proceed to the next middleware or route handler
+    next();
+  } else {
+    // User is not an admin, return an error response
+    res
+      .status(403)
+      .json({ message: "Access denied. Admin permission required." });
+  }
+};
+
 exports.register = async (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
+  const isAdmin = req.body.isAdmin;
 
+  console.log("Request received: ", req.body);
   let user;
 
   try {
@@ -57,10 +73,18 @@ exports.register = async (req, res) => {
       username,
       email,
       password: hashPassword,
+      isAdmin,
     });
 
     // Save to DB
     await user.save();
+
+    console.log("User created successfully: ", user);
+
+    // Add additional logic to assign admin privileges or roles
+    if (isAdmin) {
+      console.log("User is registered as admin");
+    }
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
