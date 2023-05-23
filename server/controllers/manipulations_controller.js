@@ -2,7 +2,7 @@ const csv = require("csvtojson");
 const WaterModel = require("../models/Water_data_model");
 const multer = require("multer");
 
-exports.preManipulations = async (req, res) => {
+exports.manipulations = async (req, res) => {
   try {
     // Upload:
     // --- destination (where the file will save)
