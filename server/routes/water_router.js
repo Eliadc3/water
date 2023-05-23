@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const uploadController = require("../controllers/upload_controller.js");
-const preManipulationsController = require("../controllers/test_pre_manipulations_controller.js");
+const manipulationsController = require("../controllers/manipulations_controller.js");
 
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
@@ -14,6 +14,6 @@ const uploadPre = multer({ dest: "uploads/premanipulated/" });
 router.post(
   "/preManipulations",
   uploadPre.single("file"),
-  preManipulationsController.preManipulations
+  manipulationsController.preManipulations
 );
 module.exports = router;

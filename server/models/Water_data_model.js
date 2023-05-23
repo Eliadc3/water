@@ -46,6 +46,9 @@ const mongoose = require("mongoose");
 // });
 
 const waterSchema = new mongoose.Schema({
+  Time: {
+    type: String,
+  },
   Stage1_concentrate_flow_m3h: {
     type: Number,
   },
