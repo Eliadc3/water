@@ -44,25 +44,12 @@ exports.manipulations = async (req, res) => {
     // filter the data to see if this is number or the record was accurate
     const manipulatedData = newRecords
       .filter((jsonObj) => {
-        return (
-          parseFloat(jsonObj.CIT_01) > 0 &&
-          parseFloat(jsonObj.TIT_01) > 0 &&
-          parseFloat(jsonObj.PIT_03) > 0 &&
-          parseFloat(jsonObj.PIT_04) > 0 &&
-          parseFloat(jsonObj.Stage1_Pressure_Drop) > 0 &&
-          parseFloat(jsonObj.PIT_05) > 0 &&
-          parseFloat(jsonObj.PIT_06) > 0 &&
-          parseFloat(jsonObj.Stage2_Pressure_Drop) > 0 &&
-          parseFloat(jsonObj.FIT_03) > 0 &&
-          parseFloat(jsonObj.CIT_02) > 0 &&
-          parseFloat(jsonObj.PIT_07) > 0 &&
-          parseFloat(jsonObj.FIT_02) > 10 &&
-          parseFloat(jsonObj.FIT_01) > 0
-        );
+        return parseFloat(jsonObj.System_On_Off_bit) === 1;
       })
       // parse all the data to number for the manipulations
       .map((jsonObj) => ({
         Time: jsonObj.Time,
+        System_On_Off_bit: parseFloat(jsonObj.System_On_Off_bit),
         CIT_01: parseFloat(jsonObj.CIT_01),
         TIT_01: parseFloat(jsonObj.TIT_01),
         PIT_03: parseFloat(jsonObj.PIT_03),

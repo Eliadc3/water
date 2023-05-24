@@ -5,8 +5,9 @@ const multer = require("multer");
 const uploadPre = multer({ dest: "uploads/manipulated/" });
 
 router.post(
-  "/Manipulations",
+  "/manipulations",
   uploadPre.single("file"),
   manipulationsController.manipulations
 );
+
 module.exports = router;
