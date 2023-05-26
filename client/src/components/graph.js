@@ -12,7 +12,7 @@ const Graph = () => {
     const fetchData = async () => {
       try {
         // Perform the data fetching here
-        const response = fetch("http://localhost:5000/water/manipulations");
+        const response = fetch("manipulations");
         const jsonData = response.json();
         // Process the jsonData and extract the necessary data for the chart
         const chartData = jsonData.map((item) => ({
