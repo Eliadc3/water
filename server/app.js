@@ -2,8 +2,6 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const express = require("express");
 require("dotenv").config();
-const user_router = require("./routes/user_router");
-const water_router = require("./routes/water_router");
 
 const URI = process.env.URI;
 const PORT = process.env.PORT;
@@ -14,6 +12,8 @@ app.use(
     credentials: true,
   })
 );
+const user_router = require("./routes/user_router");
+const water_router = require("./routes/water_router");
 
 app.use(express.json());
 mongoose

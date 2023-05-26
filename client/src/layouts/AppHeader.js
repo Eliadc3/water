@@ -13,6 +13,12 @@ const AppHeader = () => {
           <li>
             <Link to="/register">Create User</Link>
           </li>
+          <li>
+            <Link to="/uploadfile">Upload File</Link>
+          </li>
+          <li>
+            <Link to="/graph">Graph</Link>
+          </li>
         </ul>
       </nav>
     </header>

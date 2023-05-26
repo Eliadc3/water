@@ -67,6 +67,6 @@ const waterSchema = new mongoose.Schema({
 });
 
 // create a model from the schema.
-const WaterModel = mongoose.model("ManipulatedData", waterSchema);
+const WaterModel = mongoose.model("current_data", waterSchema);
 
 module.exports = WaterModel;
