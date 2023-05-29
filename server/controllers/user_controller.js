@@ -1,12 +1,19 @@
+const express = require("express");
+const router = express.Router();
+const passport = require("passport");
+const { forwardAuthenticated } = require("../config/auth");
+
 const jwt = require("jsonwebtoken");
-const User = require("../models/User_model");
-const validator = require("email-validator");
 const bcrypt = require("bcrypt");
+const validator = require("email-validator");
+
+// Load User model
+const User = require("../models/User_model");
 
 // Middleware function to check admin access
 exports.isAdmin = (req, res, next) => {
   // Check if the current user is an admin
-  if (req.user && req.user.isAdmin) {
+  if (req.user && req.user.admin) {
     // User is an admin, proceed to the next middleware or route handler
     next();
   } else {
@@ -18,78 +25,112 @@ exports.isAdmin = (req, res, next) => {
 };
 
 exports.register = async (req, res) => {
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = req.body.password;
-  const isAdmin = req.body.isAdmin;
+  // const username = req.body.username;
+  // const email = req.body.email;
+  // const password = req.body.password;
+  const { username, email, password, password2, admin } = req.body;
 
-  console.log("Request received: ", req.body);
-  let user;
+  let errors = [];
+
+  console.log("Request received: ", JSON.stringify(req.body));
+  let newUser;
 
   try {
     // Check if there is input
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "You must fill all the fields." });
+    if (!username || !email || !password || !password2) {
+      errors.push({ message: "You must fill all the fields." });
     }
 
     // Check if the input is more than 2 chars
     if (username.length < 2) {
-      return res
-        .status(400)
-        .json({ message: "Username has to be at least 2 characters." });
+      errors.push({ message: "Username has to be at least 2 characters." });
+    }
+
+    /* Check whether password and password2 matches or not */
+    if (password != password2) {
+      errors.push({ message: "Passwords do not match" });
     }
 
     // Check if password match for contidions
     if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ message: "Password has to be at least 8 characters." });
+      errors.push({ message: "Password must be at least 8 characters." });
     }
 
     // Check if the email is valid
     if (!validator.validate(email)) {
-      return res.status(400).json({ message: "Invalid email address." });
+      errors.push({ message: "Invalid email address." });
     }
 
-    // Check if username is already exist
     const checkUsername = await User.findOne({ username });
     if (checkUsername) {
-      return res.status(400).json({ message: "Username already exists." });
+      errors.push({ message: "Username already exists." });
     }
     // Check if email is already exist
     const checkEmail = await User.findOne({ email });
     if (checkEmail) {
-      return res
-        .status(400)
-        .json({ message: "Email adress already exists, try another email." });
+      errors.push({
+        message: "Email already exists.",
+      });
     }
-
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
     // Encrypt password
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
 
     // Create user object
-    user = new User({
+    newUser = new User({
       username,
       email,
       password: hashPassword,
-      isAdmin,
+      admin,
     });
 
     // Save to DB
-    await user.save();
+    await newUser.save();
 
-    console.log("User created successfully: ", user);
+    console.log("User created successfully: ", newUser);
 
     // Add additional logic to assign admin privileges or roles
-    if (isAdmin) {
+    if (admin) {
       console.log("User is registered as admin");
     }
+    return res
+      .status(201)
+      .json({ message: "User created successfully.", user: newUser });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-  if (!user) {
+    console.error(error);
     return res.status(500).json({ message: "Error. User not created." });
   }
-  return res.status(201).json({ message: "User created successfully.", user });
+};
+
+exports.login = (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Error in Login" });
+    }
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Error in Login" });
+      }
+      return res.send("Login Successful");
+    });
+  })(req, res, next);
+};
+
+exports.logout = (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      console.error(err);
+    }
+    // Logging out
+    res.send("User Logout");
+    //res.redirect("/users/"); // Redirect the user to a desired page after logout
+  });
 };

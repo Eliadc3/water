@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Graph from "../../components/graph";
+import Charts from "../../components/charts";
 
 const Upload_file_Page = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadedData, setUploadedData] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -27,7 +28,7 @@ const Upload_file_Page = () => {
       })
       .catch((error) => {
         console.error(error);
-        // Handle error
+        setError("An error occurred during upload.");
       });
   };
 
@@ -35,7 +36,8 @@ const Upload_file_Page = () => {
     <div>
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
-      {uploadedData && <Graph data={uploadedData} />}
+      {uploadedData && <Charts data={uploadedData} />}
+      {error && <div>{error}</div>}
     </div>
   );
 };

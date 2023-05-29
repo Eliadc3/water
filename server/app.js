@@ -1,7 +1,11 @@
 const cors = require("cors");
 const mongoose = require("mongoose");
 const express = require("express");
+const session = require("express-session");
 require("dotenv").config();
+
+const passport = require("passport");
+require("./config/passport")(passport);
 
 const URI = process.env.URI;
 const PORT = process.env.PORT;
@@ -12,6 +16,20 @@ app.use(
     credentials: true,
   })
 );
+
+// Express session
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 const user_router = require("./routes/user_router");
 const water_router = require("./routes/water_router");
 
@@ -19,8 +37,10 @@ app.use(express.json());
 mongoose
   .connect(URI)
   .then(() => console.log("Connected to DB"))
-  .catch((err) => console.log(err.message));
+  .catch((err) => console.log("db: " + err.message));
 
+/* Initializing the path for routes */
+//app.use("/", require("./routes"));
 app.use("/users", user_router);
 app.use("/water", water_router);
 
