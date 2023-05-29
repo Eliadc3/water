@@ -6,7 +6,8 @@ const Register_Page = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [password2, setPassword2] = useState("");
+  const [admin, setAdmin] = useState(false);
 
   const handleInputChange = (event) => {
     const { id, value } = event.target;
@@ -20,10 +21,13 @@ const Register_Page = () => {
     if (id === "password") {
       setPassword(value);
     }
+    if (id === "password2") {
+      setPassword2(value);
+    }
   };
 
   const handleAdminChange = (event) => {
-    setIsAdmin(event.target.checked);
+    setAdmin(event.target.checked);
   };
 
   const handleSubmit = async (event) => {
@@ -35,7 +39,8 @@ const Register_Page = () => {
           username,
           email,
           password,
-          isAdmin,
+          password2,
+          admin,
         },
         {
           headers: { "Content-Type": "application/json" },
@@ -47,7 +52,8 @@ const Register_Page = () => {
         console.log("username: ", username);
         console.log("email: ", email);
         console.log("password: ", password);
-        console.log("isAdmin: ", isAdmin);
+        console.log("password2: ", password);
+        console.log("Admin: ", admin);
       }
     } catch (err) {
       if (err.res && err.res.data && err.res.message) {
@@ -88,17 +94,27 @@ const Register_Page = () => {
             type="password"
             title="password"
             id="password"
-            placeholder="Password"
+            placeholder="Enter Password"
             value={password}
             onChange={handleInputChange}
           />
         </div>
-        <div className="isAdmin">
-          <label htmlFor="isAdmin">
+        <div className="password2">
+          <input
+            type="password"
+            title="password2"
+            id="password2"
+            placeholder="Enter password again"
+            value={password2}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="admin">
+          <label htmlFor="admin">
             <input
               type="checkbox"
-              id="isAdmin"
-              checked={isAdmin}
+              id="admin"
+              checked={admin}
               onChange={handleAdminChange}
             />
             Register as Admin
