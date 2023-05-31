@@ -14,13 +14,16 @@ const AppHeader = () => {
             <Link to="/login">Login</Link>
           </li>
           <li>
+            <Link to="/logout">Logout</Link>
+          </li>
+          <li>
             <Link to="/register">Create User</Link>
           </li>
           <li>
             <Link to="/uploadfile">Upload File</Link>
           </li>
           <li>
-            <Link to="/graph">Graph</Link>
+            <Link to="/dashboard">Dashboard</Link>
           </li>
         </ul>
       </nav>

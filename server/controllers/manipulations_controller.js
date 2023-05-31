@@ -249,7 +249,6 @@ exports.manipulations = async (req, res) => {
 
     // Save all the data from the csv file in object by the schema
     const results = await WaterModel.insertMany(sixthIterationLoop);
-
     return res
       .status(201)
       .json({ message: "Data successfully saved.", results });

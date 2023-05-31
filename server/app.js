@@ -35,9 +35,9 @@ const water_router = require("./routes/water_router");
 
 app.use(express.json());
 mongoose
-  .connect(URI)
-  .then(() => console.log("Connected to DB"))
-  .catch((err) => console.log("db: " + err.message));
+  .connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.log("Error connecting to MongoDB: " + err.message));
 
 /* Initializing the path for routes */
 //app.use("/", require("./routes"));

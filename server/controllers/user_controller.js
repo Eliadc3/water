@@ -112,7 +112,9 @@ exports.login = (req, res, next) => {
       return res.status(500).json({ message: "Error in Login" });
     }
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ message: "Username or password is incorrect." });
     }
     req.logIn(user, (err) => {
       if (err) {

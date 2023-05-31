@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useHistory } from "react-router-dom";
 import styles from "./Register_Page.module.css";
 import axios from "axios";
 
-const Login_Page = () => {
+const Logout_Page = () => {
+  //const history = useHistory();
   const [usernameEmail, setUsernameEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
-  const navigate = useNavigate();
+  //const [authenticated, setAuthenticated] = useState(false);
 
   const handleInputChange = (event) => {
     const { id, value } = event.target;
@@ -24,26 +23,15 @@ const Login_Page = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:5000/users/login",
-        {
-          usernameEmail,
-          password,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+      const res = await axios.get("http://localhost:5000/users/logout");
       if (res.status === 200) {
-        alert("Login successful.");
-        console.log("usernameEmail: ", usernameEmail);
-        console.log("password: ", password);
+        alert("Logout successful.");
+        console.log("usernameEmail: ", usernameEmail, "Logout");
 
-        //setAuthenticated(true);
-        // redirect to uploadfile page
-        navigate("/dashboard");
+        // setAuthenticated(true);
       }
+      // Redirect to the dashboard
+      //history.push("/dashboard");
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         alert(err.response.data.message);
@@ -79,11 +67,11 @@ const Login_Page = () => {
           />
         </div>
         <button type="submit" className={styles.btn}>
-          Submit
+          logout
         </button>
       </form>
     </div>
   );
 };
 
-export default Login_Page;
+export default Logout_Page;
