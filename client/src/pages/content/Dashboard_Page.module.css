@@ -1,0 +1,17 @@
+.body h2 {
+  font-weight: lighter;
+}
+
+.container {
+  width: 100%;
+  margin: 1em auto;
+}
+
+.grid {
+  display: grid;
+  flex-wrap: wrap;
+  margin-left: .5px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 0.5em;
+  justify-content: center;
+}

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Charts from "../../components/charts";
 
 const Upload_file_Page = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -36,7 +35,6 @@ const Upload_file_Page = () => {
     <div>
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
-      {uploadedData && <Charts data={uploadedData} />}
       {error && <div>{error}</div>}
     </div>
   );

@@ -9,7 +9,7 @@ import "./App.css";
 import MainLayout from "./layouts/MainLayout";
 import Register_page from "./pages/user/Register_page";
 import Upload_file_Page from "./pages/content/Upload_file_Page.js";
-import Charts from "./components/charts";
+//import Charts from "./components/charts";
 import Login_Page from "./pages/user/Login_page";
 import Logout_Page from "./pages/user/Logout_page";
 
