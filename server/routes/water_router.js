@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const MongoClient = require("mongodb").MongoClient;
 const WaterModel = require("../models/Water_data_model");
+const DailyWaterModel = require("../models/Daily_Water_data_model");
 require("dotenv").config();
 const URI = process.env.URI;
 
@@ -18,7 +19,7 @@ router.post(
 const express = require("express");
 const app = express();
 
-router.get("/getdata", async (req, res) => {
+router.get("/getalldata", async (req, res) => {
   try {
     const data = await WaterModel.find({});
     console.log(data);
@@ -27,22 +28,15 @@ router.get("/getdata", async (req, res) => {
     console.error("Error retrieving data from database:", err);
     res.status(500).json({ error: "Internal server error" });
   }
-  // MongoClient.connect(URI, (err, client) => {
-  //   if (err) {
-  //     return;
-  //   }
-  //   const collection = client.db("test").collection("current_datas");
-  //   collection.find({}).toArray((err, data) => {
-  //     if (err) {
-  //       console.error("Error retrieving data from database:", err);
-  //       res.status(500).json({ error: "Internal server error" });
-  //     } else {
-  //       console.log(data);
-  //       res.json(data);
-  //     }
-  //     client.close();
-  //   });
-  // });
 });
-
+router.get("/getdailydata", async (req, res) => {
+  try {
+    const data = await DailyWaterModel.find({});
+    console.log(data);
+    res.json(data);
+  } catch (err) {
+    console.error("Error retrieving data from database:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 module.exports = router;

@@ -1,13 +1,13 @@
 .card {
     display: inline-block;
-        width: 50%;
+        width: auto;
         text-align: center;
         background-color: rgb(194 225 247);
         border-radius: 6px;
         box-shadow: 3px 2px 8px 0 rgb(0 0 0 / 80%);
         height: 100%;
-        padding: 0.2rem;
-        margin: 3px 16px;
+        padding: 0.5rem;
+        margin: 1px 1px;
 }
 
 

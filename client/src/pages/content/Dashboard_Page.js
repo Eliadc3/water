@@ -11,7 +11,7 @@ const DashboardPage = () => {
     // Fetch data from the server
 
     axios
-      .get("http://localhost:5000/water/getdata")
+      .get("http://localhost:5000/water/getdailydata")
       .then((response) => {
         const data = response.data;
         console.log(data);
@@ -32,8 +32,8 @@ const DashboardPage = () => {
     // Prepare the chart series
     const series = [
       {
-        name: "Stage1_concentrate_flow_m3h",
-        data: data.map((record) => record.Stage1_concentrate_flow_m3h),
+        name: "Stage1 concentrate flow",
+        data: data.map((record) => record.average.Stage1_concentrate_flow_m3h),
       },
 
       // Add more series as per your data fields
@@ -42,12 +42,15 @@ const DashboardPage = () => {
     // Configure ApexCharts options
     const options = {
       chart: {
-        type: "line",
+        type: "bar",
         height: 350,
+      },
+      title: {
+        text: "m³h",
       },
       series: series,
       xaxis: {
-        categories: data.map((record) => record.Time),
+        categories: data.map((record) => record.date),
       },
     };
 
@@ -57,12 +60,19 @@ const DashboardPage = () => {
       options
     );
     chart.render();
+
+    // Render the chart using ApexCharts
+    const chart2 = new ApexCharts(
+      document.querySelector("#Stage2_concentrate_factor"),
+      options
+    );
+    chart2.render();
   };
 
   return (
     <div className={styles.body}>
-      <div className="container">
-        <div className="grid">
+      <div className={styles.container}>
+        <div className={styles.grid}>
           <Card>
             <h2>Stage1: concentrate flow (m³h)</h2>
             <div id="Stage1_concentrate_flow_m3h"></div>
