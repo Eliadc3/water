@@ -29,26 +29,31 @@ const DashboardPage = () => {
   }, []);
 
   const renderChart = (data) => {
-    // Prepare the chart series
-    const series = [
-      {
-        name: "Stage1 concentrate flow",
-        data: data.map((record) => record.average.Stage1_concentrate_flow_m3h),
-      },
-
-      // Add more series as per your data fields
-    ];
-
     // Configure ApexCharts options
-    const options = {
+    var options = {
+      series: [
+        {
+          name: "Stage1 concentrate flow",
+          type: "line",
+          data: data.map(
+            (record) => record.average.Stage1_concentrate_flow_m3h
+          ),
+        },
+      ],
       chart: {
-        type: "bar",
+        type: "line",
         height: 350,
+      },
+      stroke: {
+        width: 3,
       },
       title: {
         text: "m³h",
       },
-      series: series,
+
+      dataLabels: {
+        enabled: true,
+      },
       xaxis: {
         categories: data.map((record) => record.date),
       },

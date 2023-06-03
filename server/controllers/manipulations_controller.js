@@ -1,8 +1,15 @@
 const csv = require("csvtojson");
 const WaterModel = require("../models/Water_data_model");
 const DailyWaterModel = require("../models/Daily_Water_data_model");
+const WeeklyWaterModel = require("../models/Weekly_Water_data_model");
+const MonthlyWaterModel = require("../models/Monthly_Water_data_model");
 const moment = require("moment");
 const multer = require("multer");
+const fs = require("fs");
+
+const dailyAveragesController = require("../controllers/dailyAverages_controller.js");
+const weeklyAveragesController = require("../controllers/weeklyAverages_controller.js");
+const monthlyAveragesController = require("../controllers/monthlyAverages_controller.js");
 
 exports.manipulations = async (req, res) => {
   try {
@@ -27,11 +34,11 @@ exports.manipulations = async (req, res) => {
         }
         cb(null, true);
       },
-    });
+    }).single("file");
 
     const file = req.file;
     if (!file) {
-      return res.status(400).send("Please upload a CSV file.");
+      return res.status(400).send({ error: "Please upload a CSV file." });
     }
     // Create an objects array from the csv file data
     const JsonArray = await csv().fromFile(file.path);
@@ -46,7 +53,7 @@ exports.manipulations = async (req, res) => {
     // filter the data to see if this is number or the record was accurate
     const manipulatedData = newRecords
       .filter((jsonObj) => {
-        return parseFloat(jsonObj.System_On_Off_bit) === 1;
+        return parseFloat(jsonObj.System_On_Off_bit) !== 0;
       })
       // parse all the data to number for the manipulations
       .map((jsonObj) => ({
@@ -66,28 +73,6 @@ exports.manipulations = async (req, res) => {
         FIT_02: parseFloat(jsonObj.FIT_02),
         FIT_01: parseFloat(jsonObj.FIT_01),
       }));
-
-    // let Stage1_concentrate_flow_m3h,
-    //   Stage2_concentrate_factor,
-    //   Stage1_feed_TDS_mgl,
-    //   TCF,
-    //   Permeate_TDS_mgl,
-    //   Stage1_pressure_drop_bar,
-    //   Stage1_average_flow_m3h,
-    //   Stage2_pressure_drop_bar,
-    //   Stage2_average_flow_m3h,
-    //   Stage1_concentrate_factor,
-    //   Salt_rejection,
-    //   Stage1_normalized_pressure_drop_bar,
-    //   Stage2_normalized_pressure_drop_bar,
-    //   Stage1_concentrate_TDS_mgl,
-    //   Stage2_concentrate_TDS_mgl,
-    //   Salt_passage,
-    //   Stage1_aNDP,
-    //   Stage2_aNDP,
-    //   Normalized_salt_rejection,
-    //   Stage1_baseline_net_permeate_flow,
-    //   Stage2_baseline_net_permeate_flow;
 
     // first iteration loop
     const firstIterationLoop = manipulatedData.map((curr, index) => {
@@ -301,55 +286,25 @@ exports.manipulations = async (req, res) => {
         ...curr,
       };
     });
+    // Insert all the data from the csv file in object by the schema
+    await WaterModel.insertMany(sixthIterationLoop);
 
-    // calculate daily average
-    const dailyAverages = {};
-    sixthIterationLoop.forEach((record) => {
-      // convert the time field to date object
-      const date = moment(record.Time, "DD-MM-YYYY HH:mm").format("DD-MM-YYYY");
-      if (!dailyAverages[date]) {
-        dailyAverages[date] = {
-          count: 0,
-          total: { ...record },
-        };
-      } else {
-        const dailyTotal = dailyAverages[date].total;
-        for (const field in dailyTotal) {
-          if (field !== "index" && field !== "Time") {
-            dailyTotal[field] += record[field];
-          }
-        }
-      }
-      dailyAverages[date].count++;
-    });
+    // Call the daily averages controller to calculate and save daily averages
+    await dailyAveragesController.calculateDailyAverages(sixthIterationLoop);
 
-    for (const date in dailyAverages) {
-      const count = dailyAverages[date].count;
-      const dailyTotal = dailyAverages[date].total;
-      for (const field in dailyTotal) {
-        if (field !== "index" && field !== "Time") {
-          dailyTotal[field] /= count;
-          dailyTotal[field] = parseFloat(dailyTotal[field].toFixed(2));
-        }
-      }
-    }
+    // Call the weekly averages controller to calculate and save weekly averages
+    await weeklyAveragesController.calculateWeeklyAverages(sixthIterationLoop);
 
-    const dailyAveragesData = Object.keys(dailyAverages).map((date) => ({
-      date,
-      average: dailyAverages[date].total,
-    }));
+    // Call the monthly averages controller to calculate and save monthly averages
+    await monthlyAveragesController.calculateMonthlyAverages(
+      sixthIterationLoop
+    );
 
-    const dailyResults = await DailyWaterModel.insertMany(dailyAveragesData);
-
-    // Save all the data from the csv file in object by the schema
-    const results = await WaterModel.insertMany(sixthIterationLoop);
-    return res.status(201).json({
-      message: "Data successfully saved.",
-      results,
-      dailyAverages: dailyResults,
-    });
+    // Remove the uploaded file
+    //fs.unlinkSync(file.path);
+    res.status(200).send({ message: "Data manipulation successful." });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
