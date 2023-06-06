@@ -1,0 +1,14 @@
+.card {
+    display: inline-block;
+        max-width: 100%;
+        width: auto\9;
+        text-align: center;
+        background-color: rgb(194 225 247);
+        border-radius: 6px;
+        box-shadow: 3px 2px 8px 0 rgb(0 0 0 / 80%);
+        height: 100%;
+        padding: 0.5rem;
+        margin: 1px 1px;
+}
+
+

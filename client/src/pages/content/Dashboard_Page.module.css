@@ -1,0 +1,28 @@
+.body h2 {
+  font-weight: lighter;
+}
+
+.container {
+    
+    margin: 1em auto;
+    width: 90%;
+}
+
+.grid {
+  display: grid;
+  flex-wrap: wrap;
+  max-width: 90%;
+  margin-left: 1%;
+  grid-template-columns: repeat(2, 75%);
+  grid-gap: 1.5em;
+  justify-content: center;
+}
+.btn {
+  display: inline-block;
+  background: #c2e2f8;
+  border: 1px solid darken(#1fb5bf, 5%);
+  padding: .5em 2em;
+  color: black;
+  box-shadow: inset 0px 1px 0px fadeout(white, 80%);
+  margin: 0.5rem;
+}
