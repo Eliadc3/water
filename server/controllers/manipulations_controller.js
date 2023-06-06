@@ -1,6 +1,9 @@
 const csv = require("csvtojson");
 const WaterModel = require("../models/Water_data_model");
 const DailyWaterModel = require("../models/Daily_Water_data_model");
+const WeeklyWaterModel = require("../models/Weekly_Water_data_model");
+const MonthlyWaterModel = require("../models/Monthly_Water_data_model");
+
 const moment = require("moment");
 const multer = require("multer");
 
@@ -341,12 +344,106 @@ exports.manipulations = async (req, res) => {
 
     const dailyResults = await DailyWaterModel.insertMany(dailyAveragesData);
 
+    // calculate weekly average
+    const weeklyAverages = {};
+    sixthIterationLoop.forEach((record) => {
+      // convert the time field to date object
+      const date = moment(record.Time, "DD-MM-YYYY HH:mm").format("DD-MM-YYYY");
+      const weekStartDate = moment(date, "DD-MM-YYYY")
+        .startOf("isoWeek")
+        .format("DD-MM-YYYY");
+
+      if (!weeklyAverages[weekStartDate]) {
+        weeklyAverages[weekStartDate] = {
+          count: 0,
+          total: { ...record },
+        };
+      } else {
+        const weeklyTotal = weeklyAverages[weekStartDate].total;
+        for (const field in weeklyTotal) {
+          if (field !== "index" && field !== "Time") {
+            weeklyTotal[field] += record[field];
+          }
+        }
+      }
+      weeklyAverages[weekStartDate].count++;
+    });
+
+    for (const weekStartDate in weeklyAverages) {
+      const count = weeklyAverages[weekStartDate].count;
+      const weeklyTotal = weeklyAverages[weekStartDate].total;
+      for (const field in weeklyTotal) {
+        if (field !== "index" && field !== "Time") {
+          weeklyTotal[field] /= count;
+          weeklyTotal[field] = parseFloat(weeklyTotal[field].toFixed(2));
+        }
+      }
+    }
+
+    const weeklyAveragesData = Object.keys(weeklyAverages).map(
+      (weekStartDate) => ({
+        date: weekStartDate,
+        average: weeklyAverages[weekStartDate].total,
+      })
+    );
+
+    const weeklyResults = await WeeklyWaterModel.insertMany(weeklyAveragesData);
+
+    // calculate monthly average
+    const monthlyAverages = {};
+    sixthIterationLoop.forEach((record) => {
+      // convert the time field to date object
+      const date = moment(record.Time, "DD-MM-YYYY HH:mm").format("DD-MM-YYYY");
+      const monthStartDate = moment(date, "DD-MM-YYYY")
+        .startOf("month")
+        .format("DD-MM-YYYY");
+
+      if (!monthlyAverages[monthStartDate]) {
+        monthlyAverages[monthStartDate] = {
+          count: 0,
+          total: { ...record },
+        };
+      } else {
+        const monthlyTotal = monthlyAverages[monthStartDate].total;
+        for (const field in monthlyTotal) {
+          if (field !== "index" && field !== "Time") {
+            monthlyTotal[field] += record[field];
+          }
+        }
+      }
+      monthlyAverages[monthStartDate].count++;
+    });
+
+    for (const monthStartDate in monthlyAverages) {
+      const count = monthlyAverages[monthStartDate].count;
+      const monthlyTotal = monthlyAverages[monthStartDate].total;
+      for (const field in monthlyTotal) {
+        if (field !== "index" && field !== "Time") {
+          monthlyTotal[field] /= count;
+          monthlyTotal[field] = parseFloat(monthlyTotal[field].toFixed(2));
+        }
+      }
+    }
+
+    const monthlyAveragesData = Object.keys(monthlyAverages).map(
+      (monthStartDate) => ({
+        date: monthStartDate,
+        average: monthlyAverages[monthStartDate].total,
+      })
+    );
+
+    const monthlyResults = await MonthlyWaterModel.insertMany(
+      monthlyAveragesData
+    );
+
     // Save all the data from the csv file in object by the schema
     const results = await WaterModel.insertMany(sixthIterationLoop);
     return res.status(201).json({
       message: "Data successfully saved.",
       results,
       dailyAverages: dailyResults,
+      weeklyAverages: weeklyResults,
+      monthlyAverages: monthlyResults,
     });
   } catch (error) {
     console.error(error);
