@@ -9,23 +9,23 @@ const AppHeader = () => {
       <img className={styles.img} src={img} alt="" />
       Water analysis
       <nav>
-        <ul>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/logout">Logout</Link>
-          </li>
-          <li>
-            <Link to="/register">Create User</Link>
-          </li>
-          <li>
-            <Link to="/uploadfile">Upload File</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-        </ul>
+        <div>
+          <ul>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/logout">Logout</Link>
+            </li>
+            <li>
+              <Link to="/register">Create User</Link>
+            </li>
+
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+          </ul>
+        </div>
       </nav>
     </header>
   );
