@@ -17,6 +17,7 @@
   grid-gap: 1.5em;
   justify-content: center;
 }
+
 .btn {
   display: inline-block;
   background: #1976d2;
@@ -53,4 +54,11 @@
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2),
     0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
     background-color:darkcyan
+}
+.light-theme .btn {
+  background-color: #1976d2;
+}
+
+.dark-theme .btn {
+  background-color: darkcyan;
 }

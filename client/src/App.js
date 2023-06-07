@@ -1,17 +1,11 @@
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Routes,
-  Redirect,
-} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import MainLayout from "./layouts/MainLayout";
 import Register_page from "./pages/user/Register_page";
 import Login_Page from "./pages/user/Login_page";
 import Logout_Page from "./pages/user/Logout_page";
-
 import Dashboard_Page from "./pages/content/Dashboard_Page";
+import "./components/themes/themes.css";
 
 function App() {
   return (

@@ -1,0 +1,17 @@
+.chooseFileButton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.selectedFileName {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.fileInput {
+  display: none;
+}

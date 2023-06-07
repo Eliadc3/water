@@ -7,6 +7,7 @@ import Upload_file from "../../components/services/Upload_file";
 
 const DashboardPage = () => {
   const [chartData, setChartData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async (url) => {
     try {
@@ -21,8 +22,10 @@ const DashboardPage = () => {
       }));
       console.log(data);
       setChartData(chartData);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setIsLoading(false);
     }
   };
 
@@ -43,41 +46,52 @@ const DashboardPage = () => {
   return (
     <div className={styles.body}>
       <div className={styles.container}>
-        <Upload_file />
-        <div>
-          <button
-            className={styles.btn}
-            onClick={() => onClickTimeRange("daily")}
-          >
-            Daily
-          </button>
-          <button
-            className={styles.btn}
-            onClick={() => onClickTimeRange("weekly")}
-          >
-            Weekly
-          </button>
-          <button
-            className={styles.btn}
-            onClick={() => onClickTimeRange("monthly")}
-          >
-            Monthly
-          </button>
+        <Card>
+          <Upload_file />
+        </Card>
+        {isLoading ? (
+          <h2> Rendering data, please wait...</h2>
+        ) : chartData.length === 0 ? (
+          <h2>No data to display, please upload file.</h2>
+        ) : (
+          <div>
+            <Card>
+              <h3>Choose a period average to display:</h3>
+              <button
+                className={styles.btn}
+                onClick={() => onClickTimeRange("daily")}
+              >
+                Daily
+              </button>
+              <button
+                className={styles.btn}
+                onClick={() => onClickTimeRange("weekly")}
+              >
+                Weekly
+              </button>
+              <button
+                className={styles.btn}
+                onClick={() => onClickTimeRange("monthly")}
+              >
+                Monthly
+              </button>
+            </Card>
 
-          <div className={styles.grid}>
-            {chartData.map((chart) => (
-              <Card key={chart.chartId}>
-                <LineChart
-                  key={chart.chartId}
-                  chartId={chart.chartId}
-                  series={chart.series}
-                  title={chart.title}
-                  xCategories={chart.xCategories}
-                />
-              </Card>
-            ))}
+            <div className={styles.grid}>
+              {chartData.map((chart) => (
+                <Card key={chart.chartId}>
+                  <LineChart
+                    key={chart.chartId}
+                    chartId={chart.chartId}
+                    series={chart.series}
+                    title={chart.title}
+                    xCategories={chart.xCategories}
+                  />
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

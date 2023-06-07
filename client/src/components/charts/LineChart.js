@@ -1,8 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import ApexCharts from "apexcharts";
+import { ThemeContext } from "../themes/ThemeContext";
 
 const LineChart = ({ chartId, series, title, xCategories }) => {
   const chartRef = useRef(null);
+  const { theme } = useContext(ThemeContext);
+  const themeColor = theme === "dark" ? "#ffffff" : "#000000";
 
   useEffect(() => {
     if (chartRef.current) {
@@ -14,7 +17,11 @@ const LineChart = ({ chartId, series, title, xCategories }) => {
         title: {
           text: title,
           align: "center",
+          style: {
+            color: `${theme === "dark" ? "#ffffff" : "#000000"}`,
+          },
         },
+
         dataLabels: {
           enabled: true,
         },
@@ -23,7 +30,7 @@ const LineChart = ({ chartId, series, title, xCategories }) => {
         },
         grid: {
           row: {
-            colors: ["#f3f3f3", "transparent"],
+            colors: ["#F6F1F1", "transparent"],
             opacity: 0.5,
           },
         },
@@ -31,11 +38,25 @@ const LineChart = ({ chartId, series, title, xCategories }) => {
           {
             name: title,
             data: series,
-            // color: "#F97B22",
+            style: {
+              color: themeColor,
+            },
           },
         ],
         xaxis: {
           categories: xCategories,
+          labels: {
+            style: {
+              colors: themeColor,
+            },
+          },
+        },
+        yaxis: {
+          labels: {
+            style: {
+              colors: themeColor,
+            },
+          },
         },
       };
 
@@ -45,8 +66,8 @@ const LineChart = ({ chartId, series, title, xCategories }) => {
         chart.destroy();
       };
     }
-  }, [chartId, series, title, xCategories]);
-  return <div ref={chartRef} id={chartId}></div>;
+  }, [chartId, series, title, xCategories, theme]);
+  return <div style={{ color: "#000000" }} ref={chartRef} id={chartId}></div>;
 };
 
 export default LineChart;
