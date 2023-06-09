@@ -5,15 +5,15 @@ import axios from "axios";
 
 const Logout_Page = () => {
   //const history = useHistory();
-  const [usernameEmail, setUsernameEmail] = useState("");
+  const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   //const [authenticated, setAuthenticated] = useState(false);
 
   const handleInputChange = (event) => {
     const { id, value } = event.target;
 
-    if (id === "username-email") {
-      setUsernameEmail(value);
+    if (id === "usernameOrEmail") {
+      setUsernameOrEmail(value);
     }
     if (id === "password") {
       setPassword(value);
@@ -26,7 +26,7 @@ const Logout_Page = () => {
       const res = await axios.get("http://localhost:5000/users/logout");
       if (res.status === 200) {
         alert("Logout successful.");
-        console.log("usernameEmail: ", usernameEmail, "Logout");
+        console.log("usernameEmail: ", usernameOrEmail, "Logout");
 
         // setAuthenticated(true);
       }
@@ -44,14 +44,14 @@ const Logout_Page = () => {
 
   return (
     <div className={styles.loginForm}>
-      <h2>Login</h2>
+      <h2>Logout</h2>
       <form className="form-body" onSubmit={handleSubmit}>
-        <div className="username-email">
+        <div className="usernameOrEmail">
           <input
             type="text"
-            id="username-email"
+            id="usernameOrEmail"
             placeholder="Username or Email"
-            value={usernameEmail}
+            value={usernameOrEmail}
             onChange={handleInputChange}
           />
         </div>

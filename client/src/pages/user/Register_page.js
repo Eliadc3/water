@@ -4,10 +4,14 @@ import axios from "axios";
 
 const Register_Page = () => {
   const [username, setUsername] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [admin, setAdmin] = useState(false);
+
+  const [errors, setErrors] = useState([]);
 
   const handleInputChange = (event) => {
     const { id, value } = event.target;
@@ -17,6 +21,12 @@ const Register_Page = () => {
     }
     if (id === "email") {
       setEmail(value);
+    }
+    if (id === "firstname") {
+      setFirstname(value);
+    }
+    if (id === "lastname") {
+      setLastname(value);
     }
     if (id === "password") {
       setPassword(value);
@@ -37,6 +47,8 @@ const Register_Page = () => {
         "http://localhost:5000/users/register",
         {
           username,
+          firstname,
+          lastname,
           email,
           password,
           password2,
@@ -49,15 +61,10 @@ const Register_Page = () => {
       );
       if (res.status === 201) {
         alert("User created successfully.");
-        console.log("username: ", username);
-        console.log("email: ", email);
-        console.log("password: ", password);
-        console.log("password2: ", password);
-        console.log("Admin: ", admin);
       }
     } catch (err) {
-      if (err.res && err.res.data && err.res.message) {
-        alert(err.res.data.message);
+      if (err.response && err.response.data && err.response.data.errors) {
+        setErrors(err.response.data.errors);
       } else {
         alert("An error occured. please try again.");
       }
@@ -69,6 +76,16 @@ const Register_Page = () => {
     <div className={styles.loginForm}>
       <h2>Create User</h2>
       <form className="form-body" onSubmit={handleSubmit}>
+        {errors.length > 0 && (
+          <div className={styles.errorContainer}>
+            <h3>FORM REQUIREMENTS</h3>
+            <ul>
+              {errors.map((error, index) => (
+                <li key={index}>{error.message}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div className="username">
           <input
             type="text"
@@ -89,6 +106,26 @@ const Register_Page = () => {
             onChange={handleInputChange}
           />
         </div>
+        <div className="firstname">
+          <input
+            type="text"
+            title="firstname"
+            id="firstname"
+            placeholder="First name"
+            value={firstname}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="lastname">
+          <input
+            type="text"
+            title="lastname"
+            id="lastname"
+            placeholder="Last name"
+            value={lastname}
+            onChange={handleInputChange}
+          />
+        </div>
         <div className="password">
           <input
             type="password"
@@ -104,7 +141,7 @@ const Register_Page = () => {
             type="password"
             title="password2"
             id="password2"
-            placeholder="Enter password again"
+            placeholder="Enter Password Again"
             value={password2}
             onChange={handleInputChange}
           />

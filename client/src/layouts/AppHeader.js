@@ -3,20 +3,21 @@ import { Link } from "react-router-dom";
 import styles from "./AppHeader.module.css";
 import img from "../img/water_logo.png";
 import { ThemeContext } from "../components/themes/ThemeContext";
+import Logout from "../components/services/Logout";
 
 const AppHeader = () => {
   const { theme } = useContext(ThemeContext);
   console.log(theme);
   const LINKS = [
     { label: "login", path: "/login" },
-    { label: "logout", path: "/logout" },
+    // { label: "logout", path: "/logout" },
     { label: "register", path: "/register" },
     { label: "dashboard", path: "/dashboard" },
   ];
   return (
     <header className={styles.header}>
       <img className={styles.img} src={img} alt="" />
-      Water analysis
+
       <nav>
         <ul>
           {LINKS.map((e) => (
@@ -29,6 +30,7 @@ const AppHeader = () => {
               </Link>
             </li>
           ))}
+          <Logout />
         </ul>
       </nav>
     </header>

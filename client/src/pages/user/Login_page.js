@@ -5,16 +5,17 @@ import styles from "./Register_Page.module.css";
 import axios from "axios";
 
 const Login_Page = () => {
-  const [usernameEmail, setUsernameEmail] = useState("");
+  const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
+  const [errors, setErrors] = useState([]);
+
   const navigate = useNavigate();
 
   const handleInputChange = (event) => {
     const { id, value } = event.target;
 
-    if (id === "username-email") {
-      setUsernameEmail(value);
+    if (id === "usernameOrEmail") {
+      setUsernameOrEmail(value);
     }
     if (id === "password") {
       setPassword(value);
@@ -27,7 +28,7 @@ const Login_Page = () => {
       const res = await axios.post(
         "http://localhost:5000/users/login",
         {
-          usernameEmail,
+          usernameOrEmail: usernameOrEmail.toLowerCase(),
           password,
         },
         {
@@ -37,7 +38,7 @@ const Login_Page = () => {
       );
       if (res.status === 200) {
         alert("Login successful.");
-        console.log("usernameEmail: ", usernameEmail);
+        console.log("usernameEmail: ", usernameOrEmail);
         console.log("password: ", password);
 
         //setAuthenticated(true);
@@ -45,11 +46,12 @@ const Login_Page = () => {
         navigate("/dashboard");
       }
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        alert(err.response.data.message);
+      if (err.response && err.response.status) {
+        setErrors([{ message: "Invalid username/email or password." }]);
       } else {
-        alert("An error occurred. Please try again.");
+        setErrors([{ message: "An error occurred. Please try again." }]);
       }
+
       console.error(err);
     }
   };
@@ -57,13 +59,23 @@ const Login_Page = () => {
   return (
     <div className={styles.loginForm}>
       <h2>Login</h2>
+      {errors.length > 0 && (
+        <div className={styles.errorContainer}>
+          <h3>ERRORS</h3>
+          <ul>
+            {errors.map((error, index) => (
+              <li key={index}>{error.message}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <form className="form-body" onSubmit={handleSubmit}>
-        <div className="username-email">
+        <div className="usernameOrEmail">
           <input
             type="text"
-            id="username-email"
+            id="usernameOrEmail"
             placeholder="Username or Email"
-            value={usernameEmail}
+            value={usernameOrEmail}
             onChange={handleInputChange}
           />
         </div>
@@ -79,6 +91,7 @@ const Login_Page = () => {
         <button type="submit" className={styles.btn}>
           submit
         </button>
+        <div></div>
       </form>
     </div>
   );

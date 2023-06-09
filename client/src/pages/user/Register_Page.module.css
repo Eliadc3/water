@@ -115,7 +115,11 @@ body {
 .loginForm .forget:hover {
             color: darken(#1fb5bf, 5%);
         }
-    
+        
+.error {
+    color: red;
+    margin-top: 10px;
+}
 
     
 
