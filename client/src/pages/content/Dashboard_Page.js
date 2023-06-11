@@ -3,7 +3,7 @@ import axios from "axios";
 import Card from "../../components/ui/Card";
 import styles from "./Dashboard_Page.module.css";
 import LineChart from "../../components/charts/LineChart";
-import Upload_file from "../../components/services/Upload_file";
+import UploadFile from "../../components/services/UploadFile";
 
 const DashboardPage = () => {
   const [chartData, setChartData] = useState([]);
@@ -24,8 +24,8 @@ const DashboardPage = () => {
       setChartData(chartData);
       setIsLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
       setIsLoading(false);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -47,7 +47,7 @@ const DashboardPage = () => {
     <div className={styles.body}>
       <div className={styles.container}>
         <Card>
-          <Upload_file />
+          <UploadFile />
         </Card>
         {isLoading ? (
           <h2> Rendering data, please wait...</h2>

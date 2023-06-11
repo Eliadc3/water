@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import MainLayout from "./layouts/MainLayout";
-import Register_page from "./pages/user/Register_page";
-import Login_Page from "./pages/user/Login_page";
-import Logout_Page from "./pages/user/Logout_page";
-import Dashboard_Page from "./pages/content/Dashboard_Page";
+
+import RegisterPage from "./pages/user/RegisterPage";
+import LoginPage from "./pages/user/LoginPage";
+import DashboardPage from "./pages/content/Dashboard_Page";
 import "./components/themes/themes.css";
 
 function App() {
@@ -12,16 +12,11 @@ function App() {
     <div className="App">
       <MainLayout>
         <Routes>
-          <Route path="/login" element={<Login_Page />}>
-            {/* {isLoggedIn() ? <Redirect to="/dashboard" /> : <Login_Page />} */}
-          </Route>
-          <Route path="/logout" element={<Logout_Page />} />
+          <Route path="/login" element={<LoginPage />} />
 
-          <Route path="/register" element={<Register_page />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-          <Route path="/dashboard" element={<Dashboard_Page />}>
-            {/* {isLoggedIn() ? <Dashboard_Page /> : <Redirect to="/login" />} */}
-          </Route>
+          <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
       </MainLayout>
     </div>

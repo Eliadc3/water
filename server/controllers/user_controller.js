@@ -13,6 +13,7 @@ exports.register = async (req, res) => {
   try {
     const { username, firstname, lastname, email, password, password2, admin } =
       req.body;
+
     const saltRounds = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -27,32 +28,36 @@ exports.register = async (req, res) => {
     if (errors.length > 0) {
       return res.status(400).json({ errors });
     }
+    const lowerCaseUsername = username.toLowerCase();
+    const lowerCaseEmail = email.toLowerCase();
 
-    const checkUsername = await User.findOne({ username });
-    if (checkUsername) {
-      errors.push({ message: "Username already exists." });
-    }
-    // Check if email is already exist
-    const checkEmail = await User.findOne({ email });
-    if (checkEmail) {
-      errors.push({
-        message: "Email already exists.",
-      });
+    const checkUser = await User.findOne({
+      $or: [{ username: lowerCaseUsername }, { email: lowerCaseEmail }],
+    });
+    if (checkUser) {
+      const errors = [];
+      if (checkUser.username === lowerCaseUsername) {
+        errors.push({ message: "Username already exists." });
+      }
+      if (checkUser.email === lowerCaseEmail) {
+        errors.push({ message: "Email already exists." });
+      }
+      return res.status(400).json({ errors });
     }
 
     // Save the user details to the database
     await User.create({
-      username,
-      email,
+      username: lowerCaseUsername,
+      email: lowerCaseEmail,
       firstname,
       lastname,
       password: hashedPassword,
       admin,
     });
-    res.status(200).json({ message: "Registration successful" });
+    res.status(201).json({ message: "Registration successful" });
     console.log(username, email, firstname, lastname, password, admin);
   } catch (error) {
-    res.status(500).json({ error: "An error occurred" });
+    res.status(500).json({ error: "An error occurred, registration failed." });
   }
 };
 
@@ -75,17 +80,12 @@ exports.login = (req, res, next) => {
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ token });
+    res.status(201).json({ token });
   })(req, res, next);
 };
 
 // User logout
 exports.logout = (req, res) => {
   req.logout();
-  res.status(200).json({ message: "Logout successful" });
-};
-
-// Protected route
-exports.protected = (req, res) => {
-  res.status(200).json({ message: "Access granted to protected route" });
+  res.status(201).json({ message: "Logout successful" });
 };
