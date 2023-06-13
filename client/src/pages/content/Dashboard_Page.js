@@ -4,10 +4,21 @@ import Card from "../../components/ui/Card";
 import styles from "./Dashboard_Page.module.css";
 import LineChart from "../../components/charts/LineChart";
 import UploadFile from "../../components/services/UploadFile";
+import { useNavigate } from "react-router-dom";
 
-const DashboardPage = () => {
+const DashboardPage = ({ authenticated }) => {
+  const navigate = useNavigate();
+
   const [chartData, setChartData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedTimeRange, setSelectedTimeRange] = useState("");
+
+  useEffect(() => {
+    if (!authenticated) navigate("/login");
+    else {
+      fetchData("http://localhost:5000/water/getdailydata");
+    }
+  }, []);
 
   const fetchData = async (url) => {
     try {
@@ -29,10 +40,6 @@ const DashboardPage = () => {
     }
   };
 
-  useEffect(() => {
-    fetchData("http://localhost:5000/water/getdailydata");
-  }, []);
-
   const onClickTimeRange = async (timeRange) => {
     const url =
       timeRange === "daily"
@@ -41,6 +48,7 @@ const DashboardPage = () => {
         ? "http://localhost:5000/water/getweeklydata"
         : "http://localhost:5000/water/getmonthlydata";
     fetchData(url);
+    setSelectedTimeRange(timeRange);
   };
 
   return (
@@ -57,6 +65,9 @@ const DashboardPage = () => {
           <div>
             <Card>
               <h3>Choose a period average to display:</h3>
+              {selectedTimeRange && (
+                <h3>selected time range: {selectedTimeRange}</h3>
+              )}
               <button
                 className={styles.btn}
                 onClick={() => onClickTimeRange("daily")}

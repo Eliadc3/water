@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "./AppHeader.module.css";
 import img from "../img/water_logo.png";
 import { ThemeContext } from "../components/themes/ThemeContext";
-import Logout from "../components/Authentication/Logout";
+import Logout from "../components/authentication/Logout";
 
 const AppHeader = () => {
   const { theme } = useContext(ThemeContext);

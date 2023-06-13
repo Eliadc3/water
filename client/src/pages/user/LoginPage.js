@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./UserForm.module.css";
 import axios from "axios";
 
-const LoginPage = () => {
+const LoginPage = ({ checkAuthentication }) => {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
@@ -36,10 +36,15 @@ const LoginPage = () => {
           withCredentials: true,
         }
       );
-      if (res.status === 200) {
+      if (res.status === 201) {
         alert("Login successful.");
         console.log("usernameEmail: ", usernameOrEmail);
         console.log("password: ", password);
+
+        // Save token in local storage
+        localStorage.setItem("token", res.data.token);
+        debugger;
+        checkAuthentication();
 
         // redirect to uploadfile page
         navigate("/dashboard");

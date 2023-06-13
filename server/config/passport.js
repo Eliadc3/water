@@ -37,7 +37,6 @@ module.exports = (passport) => {
         passwordField: "password",
       },
       async (usernameOrEmail, password, done) => {
-        let errors = [];
         try {
           const user = await User.findOne().or([
             { username: usernameOrEmail },

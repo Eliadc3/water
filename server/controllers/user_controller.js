@@ -89,3 +89,10 @@ exports.logout = (req, res) => {
   req.logout();
   res.status(201).json({ message: "Logout successful" });
 };
+
+// exports.isAuthenticated = (req, res, next) => {
+//   if (req.isAuthenticated()) {
+//     return next();
+//   }
+//   res.status(401).json({ errors: [{ message: "Unauthorized" }] });
+// };
