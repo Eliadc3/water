@@ -1,8 +1,8 @@
 const csv = require("csvtojson");
-const WaterModel = require("../models/Water_data_model");
-const DailyWaterModel = require("../models/Daily_Water_data_model");
-const WeeklyWaterModel = require("../models/Weekly_Water_data_model");
-const MonthlyWaterModel = require("../models/Monthly_Water_data_model");
+const WaterModel = require("../models/Water_Import_model");
+const DailyWaterModel = require("../models/Water_Daily_model");
+const WeeklyWaterModel = require("../models/Water_Weekly_model");
+const MonthlyWaterModel = require("../models/Water_Monthly_model");
 
 const moment = require("moment");
 const multer = require("multer");

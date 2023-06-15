@@ -1,37 +1,26 @@
 const router = require("express").Router();
 const MongoClient = require("mongodb").MongoClient;
-const WaterModel = require("../models/Water_data_model");
-const DailyWaterModel = require("../models/Daily_Water_data_model");
-const WeeklyWaterModel = require("../models/Weekly_Water_data_model");
-const MonthlyWaterModel = require("../models/Monthly_Water_data_model");
+const WaterModel = require("../models/Water_Import_model");
+const DailyWaterModel = require("../models/Water_Daily_model");
+const WeeklyWaterModel = require("../models/Water_Weekly_model");
+const MonthlyWaterModel = require("../models/Water_Monthly_model");
+const manipulationsController = require("../controllers/manipulations_controller.js");
 
 require("dotenv").config();
 const URI = process.env.URI;
 
-const manipulationsController = require("../controllers/manipulations_controller.js");
-
 const multer = require("multer");
-const uploadPre = multer({ dest: "uploads/manipulated/" });
-
-router.post(
-  "/manipulations",
-  uploadPre.single("file"),
-  manipulationsController.manipulations
-);
+const uploadPre = multer({ dest: "uploads/pre_manipulated/" });
 
 const express = require("express");
 const app = express();
 
-router.get("/getalldata", async (req, res) => {
-  try {
-    const data = await WaterModel.find({});
-    console.log(data);
-    res.json(data);
-  } catch (err) {
-    console.error("Error retrieving data from database:", err);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+router.post(
+  "/upload",
+  uploadPre.single("file"),
+  manipulationsController.manipulations
+);
+
 router.get("/getdailydata", async (req, res) => {
   try {
     const data = await DailyWaterModel.find({});

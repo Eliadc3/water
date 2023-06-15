@@ -27,7 +27,7 @@ const UploadFile = () => {
       formData.append("file", selectedFile);
       loadingBarRef.current.continuousStart(); // Start the loading bar
       axios
-        .post("http://localhost:5000/water/manipulations", formData, {
+        .post("http://localhost:5000/water/upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
