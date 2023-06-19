@@ -135,6 +135,11 @@ ul.no_bullets {
 .errorContainer .errorTitle {
     text-align: center;
 }
-
-    
+.notification {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
 

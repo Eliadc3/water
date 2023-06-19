@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styles from "./UserForm.module.css";
 import axios from "axios";
 
-const RegisterPage = () => {
+const RegisterPage = ({
+  onSuccess,
+  onClose,
+  selectedUser,
+  setNotification,
+}) => {
   const [username, setUsername] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -10,8 +15,19 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [admin, setAdmin] = useState(false);
+  const formRef = useRef(null);
 
   const [errors, setErrors] = useState([]);
+
+  useEffect(() => {
+    if (selectedUser) {
+      setUsername(selectedUser.username);
+      setFirstname(selectedUser.firstname);
+      setLastname(selectedUser.lastname);
+      setEmail(selectedUser.email);
+      setAdmin(selectedUser.admin);
+    }
+  }, [selectedUser]);
 
   const handleInputChange = (event) => {
     const { id, value } = event.target;
@@ -37,31 +53,57 @@ const RegisterPage = () => {
   };
 
   const handleAdminChange = (event) => {
-    setAdmin(event.target.checked);
+    const { checked, id } = event.target;
+    if (id === "admin") {
+      setAdmin(checked);
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/users/register",
-        {
-          username,
-          firstname,
-          lastname,
-          email,
-          password,
-          password2,
-          admin,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+      let res;
+      if (selectedUser) {
+        // Update existing user
+        res = await axios.post(
+          `http://localhost:5000/users/users/${selectedUser._id}`,
+          {
+            username,
+            firstname,
+            lastname,
+            email,
+            admin,
+            password,
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
+      } else {
+        // Create new user
+        res = await axios.post(
+          "http://localhost:5000/users/register",
+          {
+            username,
+            firstname,
+            lastname,
+            email,
+            password,
+            password2,
+            admin,
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
+      }
       if (res.status === 201) {
-        alert("User created successfully.");
+        onClose(); //Close the register form
+        setNotification("User updated successfully.");
+        onSuccess(); // Call the onSuccess prop to trigger data refresh in the parent component
       }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
@@ -73,9 +115,29 @@ const RegisterPage = () => {
       console.error(err);
     }
   };
+
+  const handleCloseForm = () => {
+    onClose(); // Call the onClose prop to close the form in the parent component
+  };
+
+  const handleClickOutside = (event) => {
+    if (formRef.current && !formRef.current.contains(event.target)) {
+      handleCloseForm();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className={styles.loginForm}>
-      <div className={styles.formName}>Create User</div>
+    <div className={styles.loginForm} ref={formRef}>
+      <div className={styles.formName}>
+        {selectedUser ? "Edit User" : "Create User"}
+      </div>
       <form className="form-body" onSubmit={handleSubmit}>
         {errors.length > 0 && (
           <div className={styles.errorContainer}>
@@ -129,26 +191,33 @@ const RegisterPage = () => {
             onChange={handleInputChange}
           />
         </div>
-        <div className="password">
-          <input
-            type="password"
-            title="password"
-            id="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="password2">
-          <input
-            type="password"
-            title="password2"
-            id="password2"
-            placeholder="Enter Password Again"
-            value={password2}
-            onChange={handleInputChange}
-          />
-        </div>
+        {!selectedUser && (
+          <div className="password">
+            <input
+              type="password"
+              title="password"
+              id="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={handleInputChange}
+            />
+          </div>
+        )}
+        {!selectedUser && (
+          <div className="password2">
+            <input
+              type="password"
+              title="password2"
+              id="password2"
+              placeholder="Enter Password Again"
+              value={password2}
+              onChange={handleInputChange}
+            />
+          </div>
+        )}
+
+        {/* Current password input */}
+
         <div className="admin">
           <label htmlFor="admin">
             <input
@@ -157,11 +226,14 @@ const RegisterPage = () => {
               checked={admin}
               onChange={handleAdminChange}
             />
-            Register as Admin
+            Create as Admin
           </label>
         </div>
         <button type="submit" className={styles.btn}>
-          Submit
+          {selectedUser ? "Save Changes" : "Create User"}
+        </button>
+        <button type="button" onClick={handleCloseForm} className={styles.btn}>
+          Cancel
         </button>
       </form>
     </div>

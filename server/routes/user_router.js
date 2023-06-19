@@ -14,10 +14,18 @@ router.post(
 );
 
 // User logout route
-router.post(
-  "/logout",
-  // passport.authenticate("jwt", { session: false }),
-  userController.logout
-);
+router.post("/logout", userController.logout);
+
+// Get all users route
+router.get("/users", userController.getUsers);
+
+// Delete user
+router.delete("/users/:userId", userController.deleteUser);
+
+// Update user
+router.post("/users/:userId", userController.updateUser);
+
+// Change password
+// router.post("/users/:userId/change-password", userController.changePassword);
 
 module.exports = router;

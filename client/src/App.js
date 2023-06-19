@@ -8,14 +8,18 @@ import LoginPage from "./pages/user/LoginPage";
 import DashboardPage from "./pages/content/Dashboard_Page";
 import "./components/themes/themes.css";
 import { useNavigate } from "react-router-dom";
-import PrivateRoute from "./components/authentication/PrivateRoute";
+import UsersPage from "./pages/user/UsersPage";
 
 function App() {
   const navigate = useNavigate();
   const [authenticated, setAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const checkAuthentication = () => {
     const token = localStorage.getItem("token");
     setAuthenticated(!!token); // Returns either true or false
+    const admin = localStorage.getItem("admin");
+    setIsAdmin(admin === "true");
   };
 
   useEffect(() => {
@@ -34,9 +38,18 @@ function App() {
             path="/login"
             element={<LoginPage checkAuthentication={checkAuthentication} />}
           />
-
-          <Route path="/register" element={<RegisterPage />} />
-
+          <Route
+            path="/register"
+            element={
+              <RegisterPage authenticated={authenticated} isAdmin={isAdmin} />
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <UsersPage authenticated={authenticated} isAdmin={isAdmin} />
+            }
+          />
           <Route
             path="/dashboard"
             element={<DashboardPage authenticated={authenticated} />}

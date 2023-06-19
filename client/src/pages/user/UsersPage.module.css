@@ -1,0 +1,55 @@
+.container {
+    margin: 1em auto;
+        width: 100%;
+}
+.notificationContainer {
+    position: fixed;
+    top: 20px;
+    right: 50%;
+    z-index: 9999;
+    justify-content: center;
+}
+
+.notificationBox {
+    display: flex;
+    justify-content: center;
+}
+
+.notification {
+    position: relative;
+    background-color: #00b740;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(-100%);
+    animation: slideFadeIn 0.5s forwards;
+}
+
+.notification.fadeOut {
+    animation: slideFadeOut 1s forwards;
+}
+
+@keyframes slideFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}
+
+@keyframes slideFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}

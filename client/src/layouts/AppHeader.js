@@ -10,7 +10,7 @@ const AppHeader = () => {
   console.log(theme);
   const LINKS = [
     { label: "login", path: "/login" },
-    { label: "register", path: "/register" },
+    { label: "users", path: "/users" },
     { label: "dashboard", path: "/dashboard" },
   ];
   return (

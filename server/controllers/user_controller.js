@@ -80,7 +80,9 @@ exports.login = (req, res, next) => {
       { expiresIn: "1h" }
     );
 
-    res.status(201).json({ token });
+    const admin = user.admin;
+
+    res.status(201).json({ token, admin });
   })(req, res, next);
 };
 
@@ -90,9 +92,71 @@ exports.logout = (req, res) => {
   res.status(201).json({ message: "Logout successful" });
 };
 
-// exports.isAuthenticated = (req, res, next) => {
-//   if (req.isAuthenticated()) {
-//     return next();
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching users." });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    await User.findByIdAndDelete(userId);
+    res.status(201).json({ message: "User deleted succssfully." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occured while deleting the user." });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  const { userId } = req.params;
+  const { username, firstname, lastname, email, admin } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { username, firstname, lastname, email, admin },
+      { new: true }
+    );
+
+    if (user) {
+      res.status(201).json({ message: "User updated successfully.", user });
+    } else {
+      res.status(404).json({ message: "User not found." });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occurred while updating the user." });
+  }
+};
+
+// exports.changePassword = async (req, res) => {
+//   const { userId } = req.params;
+//   const { oldPassword, newPassword } = req.body;
+
+//   try {
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found." });
+//     }
+//     const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+//     if (!passwordMatch) {
+//       return res.status(400).json({ message: "Invalid old password" });
+//     }
+//     const saltRounds = await bcrypt.genSalt();
+//     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+//     user.password = hashedPassword;
+//     await user.save();
+//     res.status(201).json({ message: "Password changed successfully." });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "An error occurred while changing the password." });
 //   }
-//   res.status(401).json({ errors: [{ message: "Unauthorized" }] });
 // };

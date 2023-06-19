@@ -43,6 +43,7 @@ const LoginPage = ({ checkAuthentication }) => {
 
         // Save token in local storage
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("admin", res.data.admin);
         checkAuthentication();
 
         // redirect to uploadfile page

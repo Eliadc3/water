@@ -26,14 +26,19 @@ function validateRegistrationInput(
   if (username.length < 2) {
     errors.push({ message: "Username has to be at least 2 characters." });
   }
-  // Check if the first and last name is more than 2 chars each
-  if (firstname.length < 2 && lastname.length < 2) {
+  // Check if the first name is more than 2 chars
+  if (firstname.length < 2) {
     errors.push({
-      message:
-        "first name and last name have to be at least 2 characters each.",
+      message: "first name hase to be at least 2 characters.",
     });
   }
 
+  // Check if the last name is more than 2 chars
+  if (lastname.length < 2) {
+    errors.push({
+      message: "last name has to be at least 2 characters.",
+    });
+  }
   /* Check whether password and password2 match or not */
   if (password != password2) {
     errors.push({ message: "Passwords do not match" });

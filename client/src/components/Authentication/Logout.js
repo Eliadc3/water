@@ -8,6 +8,9 @@ const Logout = () => {
     // Clear user-related data if necessary
     localStorage.removeItem("user");
 
+    // Remove role(admin) from localStorage
+    localStorage.removeItem("admin");
+
     // Redirect the user to the login page
     window.location.href = "/login";
   };
