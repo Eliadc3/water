@@ -12,6 +12,7 @@ const AppHeader = () => {
     { label: "login", path: "/login" },
     { label: "users", path: "/users" },
     { label: "dashboard", path: "/dashboard" },
+    { label: "Baseline", path: "/baseline" },
   ];
   return (
     <header className={styles.header}>

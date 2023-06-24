@@ -9,6 +9,7 @@ import DashboardPage from "./pages/content/Dashboard_Page";
 import "./components/themes/themes.css";
 import { useNavigate } from "react-router-dom";
 import UsersPage from "./pages/user/UsersPage";
+import BaselineDataPage from "./pages/content/baselineDataPage";
 
 function App() {
   const navigate = useNavigate();
@@ -48,6 +49,15 @@ function App() {
             path="/users"
             element={
               <UsersPage authenticated={authenticated} isAdmin={isAdmin} />
+            }
+          />
+          <Route
+            path="/baseline"
+            element={
+              <BaselineDataPage
+                authenticated={authenticated}
+                isAdmin={isAdmin}
+              />
             }
           />
           <Route

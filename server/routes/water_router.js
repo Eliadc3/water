@@ -4,6 +4,7 @@ const WaterModel = require("../models/Water_Import_model");
 const DailyWaterModel = require("../models/Water_Daily_model");
 const WeeklyWaterModel = require("../models/Water_Weekly_model");
 const MonthlyWaterModel = require("../models/Water_Monthly_model");
+const baselineManipulationsController = require("../controllers/baseline_manipulations_controller.js");
 const manipulationsController = require("../controllers/manipulations_controller.js");
 
 require("dotenv").config();
@@ -14,6 +15,12 @@ const uploadPre = multer({ dest: "uploads/pre_manipulated/" });
 
 const express = require("express");
 const app = express();
+
+router.get("/baseline", baselineManipulationsController.getBaselineData);
+router.post(
+  "/baseline/manipulations",
+  baselineManipulationsController.basline_manipulations
+);
 
 router.post(
   "/upload",
