@@ -59,16 +59,21 @@ const userSchema = new mongoose.Schema(
 
   {
     timestamps: true,
-  }
+  },
+  { versionKey: false }
 );
 
 // Pre hook to convert username to lowercase before saving
-userSchema.pre("save", function (next) {
-  this.username = this.username.toLowerCase();
-  this.email = this.email.toLowerCase();
+userSchema.pre(
+  "save",
+  function (next) {
+    this.username = this.username.toLowerCase();
+    this.email = this.email.toLowerCase();
 
-  next();
-});
+    next();
+  },
+  { versionKey: false }
+);
 
 const User = mongoose.model("User", userSchema);
 

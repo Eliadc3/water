@@ -12,8 +12,19 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
     if (chartRef.current) {
       const options = {
         chart: {
-          type: "area",
+          type: "line",
           height: 350,
+          dropShadow: {
+            enabled: true,
+            color: "#000",
+            top: 18,
+            left: 7,
+            blur: 10,
+            opacity: 0.2,
+          },
+        },
+        toolbar: {
+          show: false,
         },
         title: {
           text: title,
@@ -22,12 +33,15 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
             color: `${theme === "dark" ? "#ffffff" : "#000000"}`,
           },
         },
-
         dataLabels: {
           enabled: true,
         },
+        fill: {
+          type: "solid",
+          opacity: [0.35, 1],
+        },
         stroke: {
-          curve: "straight",
+          curve: "smooth",
         },
         grid: {
           row: {
@@ -35,9 +49,13 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
             opacity: 0.5,
           },
         },
+        markers: {
+          size: 1,
+        },
         series: [
           {
             name: title,
+            type: "area",
             data: series,
             style: {
               color: themeColor,
@@ -48,12 +66,10 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
           },
           {
             name: "Baseline",
+            type: "line",
             data: baselineSeries,
-            style: {
-              color: "red",
-            },
             dataLabels: {
-              enabled: true,
+              enabled: false,
             },
           },
         ],
@@ -71,6 +87,10 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
               colors: themeColor,
             },
           },
+        },
+        tooltip: {
+          shared: false,
+          intersect: false,
         },
       };
 

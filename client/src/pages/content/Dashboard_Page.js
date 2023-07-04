@@ -40,10 +40,27 @@ const DashboardPage = ({ authenticated }) => {
       );
       const baselineData = baselineResponse.data;
 
-      console.log(baselineData);
-      const baselineChartData = Object.keys(baselineData[0]).map((field) => ({
+      //console.log(baselineData);
+
+      const dataLength = data.length;
+      //----------------------------------------------------------------------//
+      const propertyNames = Object.keys(baselineData[0]).filter(
+        (key) => key !== "_id"
+      );
+
+      const separateArrays = {};
+      for (let i = 0; i < propertyNames.length; i++) {
+        const propertyName = propertyNames[i];
+        separateArrays[propertyName] = Array(dataLength).fill(
+          baselineData[0][propertyName]
+        );
+      }
+      //---------------------------------------------------------------------//
+      console.log(separateArrays);
+
+      const baselineChartData = Object.keys(separateArrays).map((field) => ({
         chartId: field,
-        baselineSeries: baselineData.map((chart) => chart[field]),
+        baselineSeries: separateArrays[field],
       }));
 
       setBaselineChartData(baselineChartData);
@@ -108,7 +125,15 @@ const DashboardPage = ({ authenticated }) => {
                     key={chart.chartId}
                     chartId={chart.chartId}
                     series={chart.series}
-                    baselineSeries={chart.baselineSeries}
+                    baselineSeries={
+                      baselineChartData.find(
+                        (data) => data.chartId === chart.chartId
+                      )
+                        ? baselineChartData.find(
+                            (data) => data.chartId === chart.chartId
+                          ).baselineSeries
+                        : []
+                    }
                     title={chart.title}
                     xCategories={chart.xCategories}
                   />
