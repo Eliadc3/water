@@ -1,8 +1,9 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ApexCharts from "apexcharts";
 import { ThemeContext } from "../themes/ThemeContext";
+import axios from "axios";
 
-const LineChart = ({ chartId, series, title, xCategories }) => {
+const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
   const chartRef = useRef(null);
   const { theme } = useContext(ThemeContext);
   const themeColor = theme === "dark" ? "#ffffff" : "#000000";
@@ -41,6 +42,19 @@ const LineChart = ({ chartId, series, title, xCategories }) => {
             style: {
               color: themeColor,
             },
+            dataLabels: {
+              enabled: true,
+            },
+          },
+          {
+            name: "Baseline",
+            data: baselineSeries,
+            style: {
+              color: "red",
+            },
+            dataLabels: {
+              enabled: true,
+            },
           },
         ],
         xaxis: {
@@ -66,8 +80,16 @@ const LineChart = ({ chartId, series, title, xCategories }) => {
         chart.destroy();
       };
     }
-  }, [chartId, series, title, xCategories, theme]);
-  return <div style={{ color: "#000000" }} ref={chartRef} id={chartId}></div>;
+  }, [chartId, series, baselineSeries, title, xCategories, theme]);
+  return (
+    <div
+      style={{
+        color: "#000000",
+      }}
+      ref={chartRef}
+      id={chartId}
+    ></div>
+  );
 };
 
 export default LineChart;

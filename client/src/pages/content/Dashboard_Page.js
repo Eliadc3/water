@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 const DashboardPage = ({ authenticated }) => {
   const navigate = useNavigate();
-
   const [chartData, setChartData] = useState([]);
+  const [baselineChartData, setBaselineChartData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTimeRange, setSelectedTimeRange] = useState("");
 
@@ -31,9 +31,22 @@ const DashboardPage = ({ authenticated }) => {
         title: field.replace(/_/g, " "),
         xCategories: data.map((chart) => chart.date),
       }));
-      console.log(data);
+
       setChartData(chartData);
       setIsLoading(false);
+
+      const baselineResponse = await axios.get(
+        "http://localhost:5000/water/baseline"
+      );
+      const baselineData = baselineResponse.data;
+
+      console.log(baselineData);
+      const baselineChartData = Object.keys(baselineData[0]).map((field) => ({
+        chartId: field,
+        baselineSeries: baselineData.map((chart) => chart[field]),
+      }));
+
+      setBaselineChartData(baselineChartData);
     } catch (error) {
       setIsLoading(false);
       console.error("Error fetching data:", error);
@@ -95,6 +108,7 @@ const DashboardPage = ({ authenticated }) => {
                     key={chart.chartId}
                     chartId={chart.chartId}
                     series={chart.series}
+                    baselineSeries={chart.baselineSeries}
                     title={chart.title}
                     xCategories={chart.xCategories}
                   />

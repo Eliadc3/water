@@ -5,14 +5,14 @@
 .container {
     
     margin: 1em auto;
-    width: 90%;
+    max-width: 90%;
 }
 
 .grid {
   display: grid;
   flex-wrap: wrap;
   max-width: 90%;
-  margin-left: 1%;
+  margin-left: 5%;
   grid-template-columns: repeat(2, 75%);
   grid-gap: 1.5em;
   justify-content: center;

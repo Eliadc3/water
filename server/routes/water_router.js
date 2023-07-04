@@ -4,6 +4,7 @@ const WaterModel = require("../models/Water_Import_model");
 const DailyWaterModel = require("../models/Water_Daily_model");
 const WeeklyWaterModel = require("../models/Water_Weekly_model");
 const MonthlyWaterModel = require("../models/Water_Monthly_model");
+const OutputBaselineWaterModel = require("../models/Water_OutputBaseline_model");
 const baselineManipulationsController = require("../controllers/baseline_manipulations_controller.js");
 const manipulationsController = require("../controllers/manipulations_controller.js");
 
@@ -15,11 +16,23 @@ const uploadPre = multer({ dest: "uploads/pre_manipulated/" });
 
 const express = require("express");
 const app = express();
-
-router.get("/baseline", baselineManipulationsController.getBaselineData);
+router.get("/baseline", async (req, res) => {
+  try {
+    const data = await OutputBaselineWaterModel.find({});
+    console.log(data);
+    res.json(data);
+  } catch (err) {
+    console.error("Error retrieving data from database:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get(
+  "/baseline/input-data",
+  baselineManipulationsController.getInputBaselineData
+);
 router.post(
   "/baseline/manipulations",
-  baselineManipulationsController.basline_manipulations
+  baselineManipulationsController.baseline_manipulations
 );
 
 router.post(

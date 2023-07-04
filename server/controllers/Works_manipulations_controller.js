@@ -1,41 +1,73 @@
-const BaselineWaterModel = require("../models/Water_OutputBaseline_model");
-const InputBaselineWaterModel = require("../models/Water_InputBaseline_model");
-exports.getInputBaselineData = async (req, res) => {
+const csv = require("csvtojson");
+const WaterModel = require("../models/Water_Import_model");
+const DailyWaterModel = require("../models/Water_Daily_model");
+const WeeklyWaterModel = require("../models/Water_Weekly_model");
+const MonthlyWaterModel = require("../models/Water_Monthly_model");
+
+const moment = require("moment");
+const multer = require("multer");
+
+exports.manipulations = async (req, res) => {
   try {
-    const inputBaselineData = await InputBaselineWaterModel.find();
-    return res.status(200).json(inputBaselineData);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: error.message });
-  }
-};
+    // Upload:
+    // --- destination (where the file will save)
+    const fileStorageEngine = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, "./uploads/premanipulated");
+      },
+      filename: (req, file, cb) => {
+        cb(null, Date.now() + "-manipulated-" + file.originalname);
+      },
+    });
 
-exports.baseline_manipulations = async (req, res) => {
-  try {
-    // Wrap req.body in an array if it's not already an array
-    const inputBaselineData = Array.isArray(req.body) ? req.body : [req.body];
+    // --- create a property that saves the uploaded file and check if the file's format is csv
+    const upload = multer({
+      storage: fileStorageEngine,
+      fileFilter: (req, file, cb) => {
+        //check if the file is csv
+        if (file.mimetype !== "text/csv") {
+          return cb(new Error("Only CSV files are allowed."));
+        }
+        cb(null, true);
+      },
+    });
 
-    // Delete existing baseline data for replace the old data
-    await InputBaselineWaterModel.deleteMany();
+    const file = req.file;
+    if (!file) {
+      return res.status(400).send("Please upload a CSV file.");
+    }
+    // Create an objects array from the csv file data
+    const JsonArray = await csv().fromFile(file.path);
 
-    // Save the new baseline data to the database
-    await InputBaselineWaterModel.insertMany(inputBaselineData);
+    // Check if there is already exists record in the db.
+    const existsRecords = await WaterModel.find({}).lean();
+    const existingTimes = existsRecords.map((record) => record.Time);
+    const newRecords = JsonArray.filter((jsonObj) => {
+      return !existingTimes.includes(jsonObj.Time);
+    });
 
     // filter the data to see if this is number or the record was accurate
-    const manipulatedBaselineData = inputBaselineData
+    const manipulatedData = newRecords
+      .filter((jsonObj) => {
+        return parseFloat(jsonObj.System_On_Off_bit) === 1;
+      })
       // parse all the data to number for the manipulations
       .map((jsonObj) => ({
+        Time: jsonObj.Time,
+        System_On_Off_bit: parseFloat(jsonObj.System_On_Off_bit),
         CIT_01: parseFloat(jsonObj.CIT_01),
-        FIT_01: parseFloat(jsonObj.FIT_01),
-        FIT_02: parseFloat(jsonObj.FIT_02),
-        FIT_03: parseFloat(jsonObj.FIT_03),
+        TIT_01: parseFloat(jsonObj.TIT_01),
         PIT_03: parseFloat(jsonObj.PIT_03),
         PIT_04: parseFloat(jsonObj.PIT_04),
+        Stage1_Pressure_Drop: parseFloat(jsonObj.Stage1_Pressure_Drop),
         PIT_05: parseFloat(jsonObj.PIT_05),
         PIT_06: parseFloat(jsonObj.PIT_06),
-        PIT_07: parseFloat(jsonObj.PIT_07),
-        TIT_01: parseFloat(jsonObj.TIT_01),
+        Stage2_Pressure_Drop: parseFloat(jsonObj.Stage2_Pressure_Drop),
+        FIT_03: parseFloat(jsonObj.FIT_03),
         CIT_02: parseFloat(jsonObj.CIT_02),
+        PIT_07: parseFloat(jsonObj.PIT_07),
+        FIT_02: parseFloat(jsonObj.FIT_02),
+        FIT_01: parseFloat(jsonObj.FIT_01),
       }));
 
     // let Stage1_concentrate_flow_m3h,
@@ -61,19 +93,13 @@ exports.baseline_manipulations = async (req, res) => {
     //   Stage2_baseline_net_permeate_flow;
 
     // first iteration loop
-    const firstIterationLoop = manipulatedBaselineData.map((curr, index) => {
+    const firstIterationLoop = manipulatedData.map((curr, index) => {
       const Stage1_concentrate_flow_m3h =
-        parseFloat(
-          curr.FIT_01 === "NaN" || curr.FIT_01 === 0 ? 0 : curr.FIT_01
-        ) +
         parseFloat(
           curr.FIT_02 === "NaN" || curr.FIT_02 === 0 ? 0 : curr.FIT_02
         ) +
         parseFloat(
           curr.FIT_03 === "NaN" || curr.FIT_03 === 0 ? 0 : curr.FIT_03
-        ) -
-        parseFloat(
-          curr.FIT_01 === "NaN" || curr.FIT_01 === 0 ? 0 : curr.FIT_01
         );
       const fixed_Stage1_concentrate_flow_m3h = parseFloat(
         Stage1_concentrate_flow_m3h.toFixed(2)
@@ -184,7 +210,7 @@ exports.baseline_manipulations = async (req, res) => {
     });
 
     // third iteration loop
-    const thirdIterationLoop = secondIterationLoop.map((curr, index) => {
+    const thirdItertationLoop = secondIterationLoop.map((curr, index) => {
       const Stage1_concentrate_TDS_mgl =
         curr.Stage1_feed_TDS_mgl * curr.Stage1_concentrate_factor;
       const fixed_Stage1_concentrate_TDS_mgl = parseFloat(
@@ -203,7 +229,7 @@ exports.baseline_manipulations = async (req, res) => {
     });
 
     // third iteration loop
-    const fourthIterationLoop = thirdIterationLoop.map((curr, index) => {
+    const fourthIterationLoop = thirdItertationLoop.map((curr, index) => {
       const Stage2_concentrate_TDS_mgl =
         curr.Stage1_concentrate_TDS_mgl * curr.Stage2_concentrate_factor;
       const fixed_Stage2_concentrate_TDS_mgl = parseFloat(
@@ -279,15 +305,145 @@ exports.baseline_manipulations = async (req, res) => {
       };
     });
 
-    // Delete existing baseline data for replace the old data
-    await BaselineWaterModel.deleteMany();
-    const results = await BaselineWaterModel.insertMany(sixthIterationLoop);
+    // calculate daily average
+    const dailyAverages = {};
+    sixthIterationLoop.forEach((record) => {
+      // convert the time field to date object
+      const date = moment(record.Time, "DD-MM-YYYY HH:mm").format("DD-MM-YYYY");
+      if (!dailyAverages[date]) {
+        dailyAverages[date] = {
+          count: 0,
+          total: { ...record },
+        };
+      } else {
+        const dailyTotal = dailyAverages[date].total;
+        for (const field in dailyTotal) {
+          if (field !== "index" && field !== "Time") {
+            dailyTotal[field] += record[field];
+          }
+        }
+      }
+      dailyAverages[date].count++;
+    });
+
+    for (const date in dailyAverages) {
+      const count = dailyAverages[date].count;
+      const dailyTotal = dailyAverages[date].total;
+      for (const field in dailyTotal) {
+        if (field !== "index" && field !== "Time") {
+          dailyTotal[field] /= count;
+          dailyTotal[field] = parseFloat(dailyTotal[field].toFixed(2));
+        }
+      }
+    }
+
+    const dailyAveragesData = Object.keys(dailyAverages).map((date) => ({
+      date,
+      average: dailyAverages[date].total,
+    }));
+
+    const dailyResults = await DailyWaterModel.insertMany(dailyAveragesData);
+
+    // calculate weekly average
+    const weeklyAverages = {};
+    sixthIterationLoop.forEach((record) => {
+      // convert the time field to date object
+      const date = moment(record.Time, "DD-MM-YYYY HH:mm").format("DD-MM-YYYY");
+      const weekStartDate = moment(date, "DD-MM-YYYY")
+        .startOf("isoWeek")
+        .format("DD-MM-YYYY");
+
+      if (!weeklyAverages[weekStartDate]) {
+        weeklyAverages[weekStartDate] = {
+          count: 0,
+          total: { ...record },
+        };
+      } else {
+        const weeklyTotal = weeklyAverages[weekStartDate].total;
+        for (const field in weeklyTotal) {
+          if (field !== "index" && field !== "Time") {
+            weeklyTotal[field] += record[field];
+          }
+        }
+      }
+      weeklyAverages[weekStartDate].count++;
+    });
+
+    for (const weekStartDate in weeklyAverages) {
+      const count = weeklyAverages[weekStartDate].count;
+      const weeklyTotal = weeklyAverages[weekStartDate].total;
+      for (const field in weeklyTotal) {
+        if (field !== "index" && field !== "Time") {
+          weeklyTotal[field] /= count;
+          weeklyTotal[field] = parseFloat(weeklyTotal[field].toFixed(2));
+        }
+      }
+    }
+
+    const weeklyAveragesData = Object.keys(weeklyAverages).map(
+      (weekStartDate) => ({
+        date: weekStartDate,
+        average: weeklyAverages[weekStartDate].total,
+      })
+    );
+
+    const weeklyResults = await WeeklyWaterModel.insertMany(weeklyAveragesData);
+
+    // calculate monthly average
+    const monthlyAverages = {};
+    sixthIterationLoop.forEach((record) => {
+      // convert the time field to date object
+      const date = moment(record.Time, "DD-MM-YYYY HH:mm").format("DD-MM-YYYY");
+      const monthStartDate = moment(date, "DD-MM-YYYY")
+        .startOf("month")
+        .format("DD-MM-YYYY");
+
+      if (!monthlyAverages[monthStartDate]) {
+        monthlyAverages[monthStartDate] = {
+          count: 0,
+          total: { ...record },
+        };
+      } else {
+        const monthlyTotal = monthlyAverages[monthStartDate].total;
+        for (const field in monthlyTotal) {
+          if (field !== "index" && field !== "Time") {
+            monthlyTotal[field] += record[field];
+          }
+        }
+      }
+      monthlyAverages[monthStartDate].count++;
+    });
+
+    for (const monthStartDate in monthlyAverages) {
+      const count = monthlyAverages[monthStartDate].count;
+      const monthlyTotal = monthlyAverages[monthStartDate].total;
+      for (const field in monthlyTotal) {
+        if (field !== "index" && field !== "Time") {
+          monthlyTotal[field] /= count;
+          monthlyTotal[field] = parseFloat(monthlyTotal[field].toFixed(2));
+        }
+      }
+    }
+
+    const monthlyAveragesData = Object.keys(monthlyAverages).map(
+      (monthStartDate) => ({
+        date: monthStartDate,
+        average: monthlyAverages[monthStartDate].total,
+      })
+    );
+
+    const monthlyResults = await MonthlyWaterModel.insertMany(
+      monthlyAveragesData
+    );
 
     // Save all the data from the csv file in object by the schema
     // const results = await WaterModel.insertMany(sixthIterationLoop);
     return res.status(201).json({
-      message: "Baseline data successfully saved.",
-      results,
+      message: "Data successfully saved.",
+      // results,
+      dailyAverages: dailyResults,
+      weeklyAverages: weeklyResults,
+      monthlyAverages: monthlyResults,
     });
   } catch (error) {
     console.error(error);
