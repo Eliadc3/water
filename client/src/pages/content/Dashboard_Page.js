@@ -35,15 +35,13 @@ const DashboardPage = ({ authenticated }) => {
       setChartData(chartData);
       setIsLoading(false);
 
+      //------------------------BASELINE----------------------------------------------//
       const baselineResponse = await axios.get(
         "http://localhost:5000/water/baseline"
       );
       const baselineData = baselineResponse.data;
 
-      //console.log(baselineData);
-
       const dataLength = data.length;
-      //----------------------------------------------------------------------//
       const propertyNames = Object.keys(baselineData[0]).filter(
         (key) => key !== "_id"
       );
@@ -55,7 +53,6 @@ const DashboardPage = ({ authenticated }) => {
           baselineData[0][propertyName]
         );
       }
-      //---------------------------------------------------------------------//
       console.log(separateArrays);
 
       const baselineChartData = Object.keys(separateArrays).map((field) => ({
@@ -64,6 +61,7 @@ const DashboardPage = ({ authenticated }) => {
       }));
 
       setBaselineChartData(baselineChartData);
+      //---------------------------------------------------------------------//
     } catch (error) {
       setIsLoading(false);
       console.error("Error fetching data:", error);

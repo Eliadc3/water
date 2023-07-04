@@ -164,7 +164,6 @@ exports.manipulations = async (req, res) => {
         Stage1_average_flow_m3h: fixed_Stage1_average_flow_m3h,
         Stage2_pressure_drop_bar: fixed_Stage2_pressure_drop_bar,
         Stage2_average_flow_m3h: fixed_Stage2_average_flow_m3h,
-        index,
         ...curr,
       };
     });
@@ -204,7 +203,6 @@ exports.manipulations = async (req, res) => {
           fixed_Stage1_normalized_pressure_drop_bar,
         Stage2_normalized_pressure_drop_bar:
           fixed_Stage2_normalized_pressure_drop_bar,
-        index,
         ...curr,
       };
     });
@@ -223,7 +221,6 @@ exports.manipulations = async (req, res) => {
       return {
         Stage1_concentrate_TDS_mgl: fixed_Stage1_concentrate_TDS_mgl,
         Salt_passage: fixed_Salt_passage,
-        index,
         ...curr,
       };
     });
@@ -256,7 +253,6 @@ exports.manipulations = async (req, res) => {
         Stage2_concentrate_TDS_mgl: fixed_Stage2_concentrate_TDS_mgl,
         Stage1_aNDP: fixed_Stage1_aNDP,
         Normalized_salt_rejection: fixed_Normalized_salt_rejection,
-        index,
         ...curr,
       };
     });
@@ -282,7 +278,6 @@ exports.manipulations = async (req, res) => {
         Stage2_aNDP: fixed_Stage2_aNDP,
         Stage1_baseline_net_permeate_flow:
           fixed_Stage1_baseline_net_permeate_flow,
-        index,
         ...curr,
       };
     });
@@ -300,7 +295,6 @@ exports.manipulations = async (req, res) => {
       return {
         Stage2_baseline_net_permeate_flow:
           fixed_Stage2_baseline_net_permeate_flow,
-        index,
         ...curr,
       };
     });
