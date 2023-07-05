@@ -77,7 +77,7 @@ exports.login = (req, res, next) => {
     const token = jwt.sign(
       { id: user._id, username: user.username },
       SESSION_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "5m" }
     );
 
     const admin = user.admin;

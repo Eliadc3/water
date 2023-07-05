@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import ApexCharts from "apexcharts";
 import { ThemeContext } from "../themes/ThemeContext";
-import axios from "axios";
 
 const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
   const chartRef = useRef(null);
