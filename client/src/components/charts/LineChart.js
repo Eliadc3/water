@@ -23,8 +23,12 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
             opacity: 0.2,
           },
         },
-        toolbar: {
-          show: false,
+
+        dataLabels: {
+          enabled: true,
+          formatter: function(val, { seriesIndex }) {
+            return seriesIndex === 0 ? val.toString() : "";
+          },
         },
         title: {
           text: title,
@@ -33,9 +37,7 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
             color: `${theme === "dark" ? "#ffffff" : "#000000"}`,
           },
         },
-        dataLabels: {
-          enabled: true,
-        },
+
         fill: {
           type: "solid",
           opacity: [0.35, 1],
@@ -68,9 +70,7 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
             name: "Baseline",
             type: "line",
             data: baselineSeries,
-            dataLabels: {
-              enabled: false,
-            },
+            showDataLabels: false,
           },
         ],
         xaxis: {
@@ -89,7 +89,7 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
           },
         },
         tooltip: {
-          shared: false,
+          shared: true,
           intersect: false,
         },
       };

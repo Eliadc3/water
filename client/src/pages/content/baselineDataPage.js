@@ -75,7 +75,9 @@ const BaselineData = ({ authenticated, isAdmin }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/water/baseline");
+      const response = await axios.get(
+        "http://localhost:5000/water/baseline/input-data"
+      );
       const updatedBaselineData = response.data[0];
       setBaselineData(updatedBaselineData);
       setCIT_01(updatedBaselineData.CIT_01);
@@ -89,6 +91,7 @@ const BaselineData = ({ authenticated, isAdmin }) => {
       setPIT_07(updatedBaselineData.PIT_07);
       setTIT_01(updatedBaselineData.TIT_01);
       setCIT_02(updatedBaselineData.CIT_02);
+      console.log(updatedBaselineData);
     } catch (error) {
       console.error("Error fetching baseline data: ", error);
     }
