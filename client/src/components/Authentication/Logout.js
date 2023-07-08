@@ -1,15 +1,16 @@
+import Cookies from "js-cookie";
 import React from "react";
 
 const Logout = () => {
   const handleLogout = () => {
     // Remove token from localStorage
-    localStorage.removeItem("token");
+    Cookies.remove("token");
 
     // Clear user-related data if necessary
-    localStorage.removeItem("user");
+    Cookies.remove("user");
 
     // Remove role(admin) from localStorage
-    localStorage.removeItem("admin");
+    Cookies.remove("admin");
 
     // Redirect the user to the login page
     window.location.href = "/login";

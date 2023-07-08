@@ -16,7 +16,14 @@ const DashboardPage = ({ authenticated }) => {
   useEffect(() => {
     if (!authenticated) navigate("/login");
     else {
-      fetchData("http://localhost:5000/water/getdailydata");
+      const cachedData = getCachedData();
+      if (cachedData) {
+        setChartData(cachedData.chartData);
+        setBaselineChartData(cachedData.baselineChartData);
+        setIsLoading(false);
+      } else {
+        fetchData("http://localhost:5000/water/getdailydata");
+      }
     }
   }, []);
 
@@ -62,10 +69,24 @@ const DashboardPage = ({ authenticated }) => {
 
       setBaselineChartData(baselineChartData);
       //---------------------------------------------------------------------//
+      cachedData(chartData, baselineChartData);
     } catch (error) {
       setIsLoading(false);
       console.error("Error fetching data:", error);
     }
+  };
+
+  const cachedData = (chartData, baselineChartData) => {
+    const cachedData = {
+      chartData,
+      baselineChartData,
+    };
+    localStorage.setItem("dashboardData", JSON.stringify(cachedData));
+  };
+
+  const getCachedData = () => {
+    const cachedData = localStorage.getItem("dashboardData");
+    return cachedData ? JSON.parse(cachedData) : null;
   };
 
   const onClickTimeRange = async (timeRange) => {
