@@ -143,3 +143,21 @@ ul.no_bullets {
     margin-bottom: 10px;
 }
 
+.passwordContainer {
+    position: relative;
+}
+
+.passwordContainer input {
+    padding-right: 40px;
+}
+
+.passwordContainer .showPasswordButton {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}

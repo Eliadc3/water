@@ -26,6 +26,6 @@ router.delete("/users/:userId", userController.deleteUser);
 router.post("/users/:userId", userController.updateUser);
 
 // Change password
-// router.post("/users/:userId/change-password", userController.changePassword);
+router.post("/users/:userId/change-password", userController.changePassword);
 
 module.exports = router;

@@ -135,28 +135,28 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// exports.changePassword = async (req, res) => {
-//   const { userId } = req.params;
-//   const { oldPassword, newPassword } = req.body;
+exports.changePassword = async (req, res) => {
+  const { userId } = req.params;
+  const { oldPassword, newPassword } = req.body;
 
-//   try {
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found." });
-//     }
-//     const passwordMatch = await bcrypt.compare(oldPassword, user.password);
-//     if (!passwordMatch) {
-//       return res.status(400).json({ message: "Invalid old password" });
-//     }
-//     const saltRounds = await bcrypt.genSalt();
-//     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!passwordMatch) {
+      return res.status(400).json({ message: "Invalid old password" });
+    }
+    const saltRounds = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-//     user.password = hashedPassword;
-//     await user.save();
-//     res.status(201).json({ message: "Password changed successfully." });
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ message: "An error occurred while changing the password." });
-//   }
-// };
+    user.password = hashedPassword;
+    await user.save();
+    res.status(201).json({ message: "Password changed successfully." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occurred while changing the password." });
+  }
+};

@@ -4,13 +4,13 @@ import styles from "./UsersPage.module.css";
 import ReactDataGrid from "@inovua/reactdatagrid-community";
 import "@inovua/reactdatagrid-community/index.css";
 import RegisterPage from "./RegisterPage";
-// import ChangePasswordForm from "./ChangePasswordForm";
+import ChangePasswordForm from "./ChangePasswordForm";
 import { useNavigate } from "react-router-dom";
 
 const Users = ({ authenticated, isAdmin }) => {
   const [usersData, setUsersData] = useState([]);
   const [showRegisterationForm, setShowRegisterationForm] = useState(false);
-  // const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
@@ -84,38 +84,39 @@ const Users = ({ authenticated, isAdmin }) => {
     }
   };
 
-  // const handleChangePassword = (user) => {
-  //   setSelectedUser(user);
-  //   setShowChangePasswordForm(true);
-  // };
-  // const handleChangePasswordCancel = () => {
-  //   setShowChangePasswordForm(false);
-  // };
+  const handleChangePassword = (user) => {
+    setSelectedUser(user);
+    setShowChangePasswordForm(true);
+  };
 
-  // const handleChangePasswordComplete = async (
-  //   user,
-  //   oldPassword,
-  //   newPassword
-  // ) => {
-  //   try {
-  //     await axios.post(
-  //       `http://localhost:5000/users/users/${user._id}/change-password`,
-  //       {
-  //         oldPassword,
-  //         newPassword,
-  //       },
-  //       {
-  //         headers: { "Content-Type": "application/json" },
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     setShowChangePasswordForm(false);
-  //     setNotification("Password changed successfully.");
-  //     setSelectedUser(null);
-  //   } catch (error) {
-  //     console.error("Error changing password: ", error);
-  //   }
-  // };
+  const handleChangePasswordCancel = () => {
+    setShowChangePasswordForm(false);
+  };
+
+  const handleChangePasswordComplete = async (
+    user,
+    oldPassword,
+    newPassword
+  ) => {
+    try {
+      await axios.post(
+        `http://localhost:5000/users/users/${user._id}/change-password`,
+        {
+          oldPassword,
+          newPassword,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      setShowChangePasswordForm(false);
+      setNotification("Password changed successfully.");
+      setSelectedUser(null);
+    } catch (error) {
+      console.error("Error changing password: ", error);
+    }
+  };
 
   const customersGrid = [
     { name: "username", header: "Username", defaultFlex: 0.6 },
@@ -151,13 +152,13 @@ const Users = ({ authenticated, isAdmin }) => {
     {
       name: "actions",
       header: "Actions",
-      defaultFlex: 0.6,
+      defaultFlex: 1,
       render: ({ data }) => (
         <div>
           <button onClick={() => handleEditUser(data)}>Edit</button>
-          {/* <button onClick={() => handleChangePassword(data)}>
+          <button onClick={() => handleChangePassword(data)}>
             Change Password
-          </button> */}
+          </button>
           <button onClick={() => handleDeleteUser(data)}>Delete</button>
         </div>
       ),
@@ -182,19 +183,18 @@ const Users = ({ authenticated, isAdmin }) => {
               />
             </div>
           </div>
+        ) : showChangePasswordForm ? (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Change Password</h3>
+              <ChangePasswordForm
+                user={selectedUser}
+                onCancel={handleChangePasswordCancel}
+                onChangePassword={handleChangePasswordComplete}
+              />
+            </div>
+          </div>
         ) : (
-          //  showChangePasswordForm ? (
-          //   <div className="modal">
-          //     <div className="modal-content">
-          //       <h3>Change Password</h3>
-          //       <ChangePasswordForm
-          //         user={selectedUser}
-          //         onCancel={handleChangePasswordCancel}
-          //         onChangePassword={handleChangePasswordComplete}
-          //       />
-          //     </div>
-          //   </div>
-          // ) :
           <div>
             {notification && (
               <div className={styles.notificationContainer}>

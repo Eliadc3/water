@@ -103,9 +103,11 @@ const DashboardPage = ({ authenticated }) => {
   return (
     <div className={styles.body}>
       <div className={styles.container}>
-        <Card>
+        <div>
+          <h3>Upload File</h3>
           <UploadFile />
-        </Card>
+        </div>
+
         {isLoading ? (
           <h2> Rendering data, please wait...</h2>
         ) : chartData.length === 0 ? (

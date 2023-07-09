@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
 import styles from "./UserForm.module.css";
 import axios from "axios";
@@ -9,6 +10,7 @@ const LoginPage = ({ checkAuthentication }) => {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -78,6 +80,9 @@ const LoginPage = ({ checkAuthentication }) => {
       console.error(err);
     }
   };
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className={styles.loginForm}>
@@ -104,14 +109,21 @@ const LoginPage = ({ checkAuthentication }) => {
             onChange={handleInputChange}
           />
         </div>
-        <div className="password">
+        <div className={styles.passwordContainer}>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             placeholder="Enter Password"
             value={password}
             onChange={handleInputChange}
           />
+          <button
+            type="button"
+            className={styles.showPasswordButton}
+            onClick={toggleShowPassword}
+          >
+            {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+          </button>
         </div>
         <button type="submit" className={styles.btn}>
           submit
