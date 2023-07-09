@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import styles from "./UserForm.module.css";
 import axios from "axios";
+import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
 const RegisterPage = ({
   onSuccess,
@@ -16,6 +17,7 @@ const RegisterPage = ({
   const [password2, setPassword2] = useState("");
   const [admin, setAdmin] = useState(false);
   const formRef = useRef(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [errors, setErrors] = useState([]);
 
@@ -133,6 +135,10 @@ const RegisterPage = ({
     };
   }, []);
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className={styles.loginForm} ref={formRef}>
       <div className={styles.formName}>
@@ -192,31 +198,47 @@ const RegisterPage = ({
           />
         </div>
         {!selectedUser && (
-          <div className="password">
-            <input
-              type="password"
-              title="password"
-              id="password"
-              placeholder="Enter Password"
-              value={password}
-              onChange={handleInputChange}
-            />
+          <div className={styles.passwordContainer}>
+            <div className="password">
+              <input
+                type={showPassword ? "text" : "password"}
+                title="password"
+                id="password"
+                placeholder="Enter Password"
+                value={password}
+                onChange={handleInputChange}
+              />
+              <button
+                type="button"
+                className={styles.showPasswordButton}
+                onClick={toggleShowPassword}
+              >
+                {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+              </button>
+            </div>
           </div>
         )}
         {!selectedUser && (
-          <div className="password2">
-            <input
-              type="password"
-              title="password2"
-              id="password2"
-              placeholder="Enter Password Again"
-              value={password2}
-              onChange={handleInputChange}
-            />
+          <div className={styles.passwordContainer}>
+            <div className="password2">
+              <input
+                type={showPassword ? "text" : "password"}
+                title="password2"
+                id="password2"
+                placeholder="Enter Password Again"
+                value={password2}
+                onChange={handleInputChange}
+              />
+              <button
+                type="button"
+                className={styles.showPasswordButton}
+                onClick={toggleShowPassword}
+              >
+                {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+              </button>
+            </div>
           </div>
         )}
-
-        {/* Current password input */}
 
         <div className="admin">
           <label htmlFor="admin">

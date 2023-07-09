@@ -6,8 +6,9 @@ import "@inovua/reactdatagrid-community/index.css";
 import RegisterPage from "./RegisterPage";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
-const Users = ({ authenticated, isAdmin }) => {
+const Users = () => {
   const [usersData, setUsersData] = useState([]);
   const [showRegisterationForm, setShowRegisterationForm] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
@@ -15,11 +16,22 @@ const Users = ({ authenticated, isAdmin }) => {
   const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
 
+  const checkAuthentication = () => {
+    const token = Cookies.get("token");
+    const admin = Cookies.get("admin");
+
+    if (!token || admin !== "true") {
+      navigate("/login");
+    }
+  };
   useEffect(() => {
-    if (!authenticated) navigate("/login");
-    if (!isAdmin) navigate("/dashboard");
-    fetchData();
-  }, [isAdmin]);
+    const fetchDataAndCheckAuthentication = async () => {
+      await checkAuthentication();
+      fetchData();
+    };
+
+    fetchDataAndCheckAuthentication();
+  }, []);
 
   useEffect(() => {
     if (notification) {
@@ -29,6 +41,7 @@ const Users = ({ authenticated, isAdmin }) => {
       return () => clearTimeout(timer);
     }
   }, [notification]);
+
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:5000/users/users");

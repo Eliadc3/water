@@ -44,27 +44,28 @@ const LoginPage = ({ checkAuthentication }) => {
         console.log("usernameEmail: ", usernameOrEmail);
         console.log("password: ", password);
 
-        const minutes = 2; // Set the expiration time for the cookie
         const setupTime = new Date().getTime(); // Get the current time
-        // Save token as a cookie
-        Cookies.set("token", res.data.token, {
-          expires: minutes / (24 * 60), // Convert minutes to days
-        });
-        Cookies.set("admin", res.data.admin, {
-          expires: minutes / (24 * 60), // Convert minutes to days
-        });
-        Cookies.set("setupTime", setupTime, {
-          expires: minutes / (24 * 60),
-        });
 
-        // const hours = 1; // Set the expiration time for the cookie
+        // const minutes = 2; // Set the expiration time for the cookie
         // // Save token as a cookie
         // Cookies.set("token", res.data.token, {
-        //   expires: hours / 24,
+        //   expires: minutes / (24 * 60), // Convert minutes to days
         // });
         // Cookies.set("admin", res.data.admin, {
-        //   expires: hours / 24,
+        //   expires: minutes / (24 * 60), // Convert minutes to days
         // });
+        // Cookies.set("setupTime", setupTime, {
+        //   expires: minutes / (24 * 60),
+        // });
+
+        const hours = 1; // Set the expiration time for the cookie
+        // Save token as a cookie
+        Cookies.set("token", res.data.token, {
+          expires: hours / 24,
+        });
+        Cookies.set("admin", res.data.admin, {
+          expires: hours / 24,
+        });
         checkAuthentication();
 
         // redirect to uploadfile page

@@ -5,8 +5,9 @@ import styles from "./Dashboard_Page.module.css";
 import LineChart from "../../components/charts/LineChart";
 import UploadFile from "../../components/services/UploadFile";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
-const DashboardPage = ({ authenticated }) => {
+const DashboardPage = () => {
   const navigate = useNavigate();
   const [chartData, setChartData] = useState([]);
   const [baselineChartData, setBaselineChartData] = useState([]);
@@ -14,16 +15,20 @@ const DashboardPage = ({ authenticated }) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState("");
 
   useEffect(() => {
-    if (!authenticated) navigate("/login");
-    else {
-      const cachedData = getCachedData();
-      if (cachedData) {
-        setChartData(cachedData.chartData);
-        setBaselineChartData(cachedData.baselineChartData);
-        setIsLoading(false);
-      } else {
-        fetchData("http://localhost:5000/water/getdailydata");
-      }
+    const token = Cookies.get("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    const cachedData = getCachedData();
+    if (cachedData) {
+      setChartData(cachedData.chartData);
+      setBaselineChartData(cachedData.baselineChartData);
+      setIsLoading(false);
+    } else {
+      fetchData("http://localhost:5000/water/getdailydata");
     }
   }, []);
 
@@ -38,7 +43,6 @@ const DashboardPage = ({ authenticated }) => {
         title: field.replace(/_/g, " "),
         xCategories: data.map((chart) => chart.date),
       }));
-
       setChartData(chartData);
       setIsLoading(false);
 

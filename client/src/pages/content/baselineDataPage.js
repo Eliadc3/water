@@ -11,8 +11,9 @@ import {
   TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
-const BaselineData = ({ authenticated, isAdmin }) => {
+const BaselineData = () => {
   const [baselineData, setBaselineData] = useState([]);
   const [CIT_01, setCIT_01] = useState("");
   const [FIT_01, setFIT_01] = useState("");
@@ -29,11 +30,22 @@ const BaselineData = ({ authenticated, isAdmin }) => {
   const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
 
+  const checkAuthentication = () => {
+    const token = Cookies.get("token");
+    const admin = Cookies.get("admin");
+
+    if (!token || admin !== "true") {
+      navigate("/login");
+    }
+  };
   useEffect(() => {
-    if (!authenticated) navigate("/login");
-    if (!isAdmin) navigate("/dashboard");
-    fetchData();
-  }, [isAdmin]);
+    const fetchDataAndCheckAuthentication = async () => {
+      await checkAuthentication();
+      fetchData();
+    };
+
+    fetchDataAndCheckAuthentication();
+  }, []);
 
   useEffect(() => {
     if (notification) {
