@@ -129,8 +129,9 @@ ul.no_bullets {
     /* Remove margins */
 }
 .errorContainer { 
-    text-align: left;
-    background-color: #1fb5bf;
+    text-align: center;
+    font-size: larger;
+    margin-bottom: 30px;
 }
 .errorContainer .errorTitle {
     text-align: center;

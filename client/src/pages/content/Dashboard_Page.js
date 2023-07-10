@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "../../components/ui/Card";
-import styles from "./Dashboard_Page.module.css";
+import styles from "../css/Dashboard_Page.module.css";
 import LineChart from "../../components/charts/LineChart";
 import UploadFile from "../../components/services/UploadFile";
 import { useNavigate } from "react-router-dom";

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./UserForm.module.css";
+import styles from "../css/UserForm.module.css";
 import "@inovua/reactdatagrid-community/index.css";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 

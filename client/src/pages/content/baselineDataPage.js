@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import styles from "./BaselinePage.module.css";
+import notifStyles from "../css/Notifications.module.css";
+import { ThemeContext } from "../../components/themes/ThemeContext";
+import "../../components/themes/themes.css";
+
 import {
   Table,
   TableBody,
@@ -14,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 const BaselineData = () => {
+  const { theme } = useContext(ThemeContext);
+
   const [baselineData, setBaselineData] = useState([]);
   const [CIT_01, setCIT_01] = useState("");
   const [FIT_01, setFIT_01] = useState("");
@@ -113,35 +118,44 @@ const BaselineData = () => {
     <div className="m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl">
       <h2>Baseline</h2>
 
-      <div>
-        {notification && (
-          <div className={styles.notificationContainer}>
-            <div className={styles.notificationBox}>
-              <div
-                className={`${styles.notification} ${
-                  notification.fadeOut ? styles.fadeOut : ""
-                }`}
-              >
-                {notification}
-              </div>
+      {notification && (
+        <div className={notifStyles.notificationContainer}>
+          <div className={notifStyles.notificationBox}>
+            <div
+              className={`${notifStyles.notification} ${
+                notification.fadeOut ? notifStyles.fadeOut : ""
+              }`}
+            >
+              {notification}
             </div>
           </div>
-        )}
-
+        </div>
+      )}
+      <div className={`${theme}-theme`}>
         <TableContainer>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Parameter</TableCell>
-                <TableCell>Input Tag Name</TableCell>
-                <TableCell>Value</TableCell>
+                <TableCell>
+                  <h2>Parameter</h2>
+                </TableCell>
+                <TableCell>
+                  <h2>Input Tag Name</h2>
+                </TableCell>
+                <TableCell>
+                  <h2>Value</h2>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
                 <TableCell>Stage 1 - Feed conductivity</TableCell>
                 <TableCell>CIT_01</TableCell>
-                <TableCell>
+                <TableCell
+                  style={{
+                    color: theme === "dark" ? "#FFFFFF" : "#000000",
+                  }}
+                >
                   <TextField
                     type="text"
                     value={CIT_01}
@@ -149,7 +163,7 @@ const BaselineData = () => {
                   />
                 </TableCell>
               </TableRow>
-              <TableRow>
+              <TableRow sx={{ height: "2rem" }}>
                 <TableCell>Stage 1 - Permeat flow</TableCell>
                 <TableCell>FIT_01</TableCell>
                 <TableCell>

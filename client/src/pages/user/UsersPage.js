@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./UsersPage.module.css";
+import notifStyles from "../css/Notifications.module.css";
 import ReactDataGrid from "@inovua/reactdatagrid-community";
 import "@inovua/reactdatagrid-community/index.css";
 import RegisterPage from "./RegisterPage";
@@ -184,7 +184,7 @@ const Users = () => {
 
       <button onClick={handleAddUser}>Add a New User</button>
 
-      <div className={styles.container}>
+      <div className={notifStyles.container}>
         {showRegisterationForm ? (
           <div className="modal">
             <div className="modal-content">
@@ -210,11 +210,11 @@ const Users = () => {
         ) : (
           <div>
             {notification && (
-              <div className={styles.notificationContainer}>
-                <div className={styles.notificationBox}>
+              <div className={notifStyles.notificationContainer}>
+                <div className={notifStyles.notificationBox}>
                   <div
-                    className={`${styles.notification} ${
-                      notification.fadeOut ? styles.fadeOut : ""
+                    className={`${notifStyles.notification} ${
+                      notification.fadeOut ? notifStyles.fadeOut : ""
                     }`}
                   >
                     {notification}

@@ -8,6 +8,7 @@
     padding: 0 5%;
     margin-bottom: 30px;
 }
+
 .header ul{
     list-style: none;
     display: flex;
@@ -23,8 +24,8 @@
 }
 
 .header a:hover{
-    /* color: #352bea; */
-    /* text-shadow: 2px 2px #352bea; */
+    color: #352bea; 
+     text-shadow: 2px 2px #352bea;
 }
 
 .header a:focus {color: #e7e7e7; }

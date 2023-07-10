@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
-import styles from "./UserForm.module.css";
+import styles from "../css/UserForm.module.css";
+import notifStyles from "../css/Notifications.module.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 
 const LoginPage = ({ checkAuthentication }) => {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [badNotification, setBadNotification] = useState(null);
+  const [errors, setErrors] = useState([]);
 
   const navigate = useNavigate();
 
@@ -24,6 +27,15 @@ const LoginPage = ({ checkAuthentication }) => {
       setPassword(value);
     }
   };
+
+  useEffect(() => {
+    if (badNotification) {
+      const timer = setTimeout(() => {
+        setBadNotification(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [badNotification]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -40,10 +52,6 @@ const LoginPage = ({ checkAuthentication }) => {
         }
       );
       if (res.status === 201) {
-        alert("Login successful.");
-        console.log("usernameEmail: ", usernameOrEmail);
-        console.log("password: ", password);
-
         const setupTime = new Date().getTime(); // Get the current time
 
         // const minutes = 2; // Set the expiration time for the cookie
@@ -74,10 +82,10 @@ const LoginPage = ({ checkAuthentication }) => {
     } catch (err) {
       if (err.response && err.response.status) {
         setErrors([{ message: "Invalid username/email or password." }]);
+        setBadNotification("Invalid username/email or password.");
       } else {
         setErrors([{ message: "An error occurred. Please try again." }]);
       }
-
       console.error(err);
     }
   };
@@ -86,51 +94,64 @@ const LoginPage = ({ checkAuthentication }) => {
   };
 
   return (
-    <div className={styles.loginForm}>
-      <div className={styles.formName}>Login</div>
-      <form className="form-body" onSubmit={handleSubmit}>
-        {errors.length > 0 && (
-          <div className={styles.errorContainer}>
-            <div className={styles.errorTitle}>
-              <h3>ERRORS</h3>
+    <div>
+      {badNotification && (
+        <div className={notifStyles.notificationContainer}>
+          <div className={notifStyles.notificationBox}>
+            <div
+              className={`${notifStyles.badnotification} ${
+                badNotification.fadeOut ? notifStyles.fadeOut : ""
+              }`}
+            >
+              {badNotification}
             </div>
-            <ul className={styles.no_bullets}>
-              {errors.map((error, index) => (
-                <li key={index}>{error.message}</li>
-              ))}
-            </ul>
           </div>
-        )}
-        <div className="usernameOrEmail">
-          <input
-            type="text"
-            id="usernameOrEmail"
-            placeholder="Username or Email"
-            value={usernameOrEmail}
-            onChange={handleInputChange}
-          />
         </div>
-        <div className={styles.passwordContainer}>
-          <input
-            type={showPassword ? "text" : "password"}
-            id="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={handleInputChange}
-          />
-          <button
-            type="button"
-            className={styles.showPasswordButton}
-            onClick={toggleShowPassword}
-          >
-            {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+      )}
+      <div className={styles.loginForm}>
+        <div className={styles.formName}>Login</div>
+        <form className="form-body" onSubmit={handleSubmit}>
+          {errors.length > 0 && (
+            <div className={styles.errorContainer}>
+              <div className={styles.errorTitle}></div>
+              <ul className={styles.no_bullets}>
+                {errors.map((error, index) => (
+                  <li key={index}>{error.message}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="usernameOrEmail">
+            <input
+              type="text"
+              id="usernameOrEmail"
+              placeholder="Username or Email"
+              value={usernameOrEmail}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className={styles.passwordContainer}>
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={handleInputChange}
+            />
+            <button
+              type="button"
+              className={styles.showPasswordButton}
+              onClick={toggleShowPassword}
+            >
+              {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+            </button>
+          </div>
+          <button type="submit" className={styles.btn}>
+            submit
           </button>
-        </div>
-        <button type="submit" className={styles.btn}>
-          submit
-        </button>
-        <div></div>
-      </form>
+          <div></div>
+        </form>
+      </div>
     </div>
   );
 };

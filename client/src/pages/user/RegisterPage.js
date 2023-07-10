@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import styles from "./UserForm.module.css";
+import styles from "../css/UserForm.module.css";
 import axios from "axios";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
@@ -18,6 +18,7 @@ const RegisterPage = ({
   const [admin, setAdmin] = useState(false);
   const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
 
   const [errors, setErrors] = useState([]);
 
@@ -122,21 +123,11 @@ const RegisterPage = ({
     onClose(); // Call the onClose prop to close the form in the parent component
   };
 
-  const handleClickOutside = (event) => {
-    if (formRef.current && !formRef.current.contains(event.target)) {
-      handleCloseForm();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+  const toggleShowPassword2 = () => {
+    setShowPassword2(!showPassword2);
   };
 
   return (
@@ -222,7 +213,7 @@ const RegisterPage = ({
           <div className={styles.passwordContainer}>
             <div className="password2">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword2 ? "text" : "password"}
                 title="password2"
                 id="password2"
                 placeholder="Enter Password Again"
@@ -232,9 +223,9 @@ const RegisterPage = ({
               <button
                 type="button"
                 className={styles.showPasswordButton}
-                onClick={toggleShowPassword}
+                onClick={toggleShowPassword2}
               >
-                {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+                {showPassword2 ? <RiEyeCloseLine /> : <RiEyeLine />}
               </button>
             </div>
           </div>

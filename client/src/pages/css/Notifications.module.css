@@ -5,7 +5,7 @@
 .notificationContainer {
     position: fixed;
     top: 20px;
-    right: 50%;
+    right: 45%;
     z-index: 9999;
     justify-content: center;
 }
@@ -18,6 +18,17 @@
 .notification {
     position: relative;
     background-color: #00b740;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(-100%);
+    animation: slideFadeIn 0.5s forwards;
+}
+
+.badnotification {
+    position: relative;
+    background-color: #e63737;
     color: #ffffff;
     padding: 10px 20px;
     border-radius: 4px;

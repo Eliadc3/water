@@ -8,14 +8,13 @@ import Logout from "../components/authentication/Logout";
 const AppHeader = ({ isAdmin, authenticated }) => {
   const { theme } = useContext(ThemeContext);
   const LINKS = [
-    ...(authenticated ? [{ label: "dashboard", path: "/dashboard" }] : []),
     ...(isAdmin
       ? [
+          { label: "dashboard", path: "/dashboard" },
           { label: "users", path: "/users" },
           { label: "Baseline", path: "/baseline" },
         ]
       : []),
-    { label: "login", path: "/login" },
   ];
 
   return (

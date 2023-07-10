@@ -1,8 +1,8 @@
 import React, { useState, createContext, useEffect } from "react";
-
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 const ThemeContext = createContext();
 
-const ThemeProvider = ({ defaultTheme, children }) => {
+const ThemeProviderWrapper = ({ defaultTheme, children }) => {
   const [theme, setTheme] = useState(getSavedTheme || defaultTheme);
 
   useEffect(() => {
@@ -18,6 +18,15 @@ const ThemeProvider = ({ defaultTheme, children }) => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
+  const muiTheme = createTheme({
+    palette: {
+      mode: theme,
+    },
+    style: {
+      fontsize: "12px",
+    },
+  });
+
   const themeContextValue = {
     theme,
     toggleTheme,
@@ -25,9 +34,9 @@ const ThemeProvider = ({ defaultTheme, children }) => {
 
   return (
     <ThemeContext.Provider value={themeContextValue}>
-      {children}
+      <ThemeProvider theme={muiTheme}>{children}</ThemeProvider>
     </ThemeContext.Provider>
   );
 };
 
-export { ThemeContext, ThemeProvider };
+export { ThemeContext, ThemeProviderWrapper };
