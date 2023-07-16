@@ -5,7 +5,7 @@ import ThemeToggler from "../components/themes/ThemeToggler";
 const MainLayout = (props) => {
   return (
     <div>
-      <ThemeToggler />
+      {/* <ThemeToggler /> */}
       <main className={styles.main}>{props.children}</main>
     </div>
   );

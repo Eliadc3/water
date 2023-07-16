@@ -24,6 +24,24 @@ body {
     
         box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 }
+
+.light-theme .loginForm {
+    width: 40%;
+    min-width: 320px;
+    max-width: 475px;
+    background: rgb(255, 255, 255);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+}
+
 .loginForm form{
     display: block;
     width: 100%;
@@ -37,7 +55,7 @@ body {
     font-family: 'open sans condensed';
     font-size: 2em;
     display:inline-block;
-    background: #c2e2f8;
+    background: #2d363c;
     width: 100%;
     text-transform: uppercase;
     padding: 1em 1em 1em 1em;
@@ -69,10 +87,10 @@ body {
 
 .loginForm .btn {
     display: inline-block;
-    background: #c2e2f8;
+    background: #2d363c;
     border: 1px solid darken(#1fb5bf, 5%);
     padding: .5em 2em;
-    color: black;
+    color: white;
     box-shadow: inset 0px 1px 0px fadeout(white, 80%);
     margin: 0.5rem;
 }

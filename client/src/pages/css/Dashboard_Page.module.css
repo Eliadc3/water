@@ -8,6 +8,12 @@
     max-width: 90%;
 }
 
+.uploadFile {
+  float: left;
+}
+.uploadFile .btn {
+  padding: 1px;
+}
 .grid {
   display: grid;
   flex-wrap: wrap;
@@ -24,7 +30,7 @@
   border: 0;
   color: #fff;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-  margin: 0.5rem;
+  margin: 3px;
   box-sizing: border-box;
   -webkit-box-pack: center;
   -webkit-tap-highlight-color: transparent;
@@ -60,5 +66,53 @@
 }
 
 .dark-theme .btn {
+  background-color: darkcyan;
+}
+
+
+.gridbtn {
+  display: inline-block;
+  background: #1976d2;
+  border: 0;
+  color: #fff;
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  margin: 3px;
+  box-sizing: border-box;
+  -webkit-box-pack: center;
+  -webkit-tap-highlight-color: transparent;
+  align-items: center;
+  cursor: pointer;
+  vertical-align: middle;
+  text-decoration: none;
+  font-family: "Roboto",
+    "Helvetica",
+    "Arial",
+    sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  line-height: 1.75;
+  letter-spacing: 0.02857em;
+  text-transform: uppercase;
+  min-width: 64px;
+  padding: 6px 16px;
+  border-radius: 4px;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.gridbtn:active,
+.gridbtn:focus {
+  transform: translateY(1px);
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2),
+    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  background-color: darkcyan
+}
+
+.light-theme .gridbtn {
+  background-color: #1976d2;
+}
+
+.dark-theme .gridbtn {
   background-color: darkcyan;
 }

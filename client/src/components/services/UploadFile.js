@@ -58,13 +58,20 @@ const UploadFile = () => {
         height={"4px"}
         ref={loadingBarRef}
       />
-      <Button variant="contained" component="label">
-        Select File
-        <input type="file" hidden onChange={handleFileChange} />
-      </Button>
-      <Button onClick={handleUpload} variant="contained">
-        Upload
-      </Button>
+      <div className={styles.buttons}>
+        <Button className={styles.button} variant="contained" component="label">
+          Select File
+          <input type="file" hidden onChange={handleFileChange} />
+        </Button>
+        <label> </label>
+        <Button
+          className={styles.button}
+          onClick={handleUpload}
+          variant="contained"
+        >
+          Upload
+        </Button>
+      </div>
       <div className={styles.selectedFileName}>{selectedFileName}</div>{" "}
       {error && <div>{error}</div>}
     </div>

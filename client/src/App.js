@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 import { ThemeContext } from "./components/themes/ThemeContext";
 import "./components/themes/themes.css";
@@ -15,41 +15,47 @@ import AppHeader from "./layouts/AppHeader";
 
 function App() {
   const { theme } = useContext(ThemeContext);
-
   const [authenticated, setAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const checkAuthentication = () => {
     const token = Cookies.get("token");
     const setupTime = Cookies.get("setupTime");
     const hours = 1; // to clear the cookie after 5 minutes
-    // const minutes = 2; // to clear the cookie after 2 minutes
 
     if (token) {
       const currentTime = new Date().getTime();
       if (currentTime - setupTime > hours * 60 * 60 * 1000) {
-        //if (currentTime - setupTime > minutes * 60 * 1000) {
-        // Token expired, clear cookies and set authenticated to false
-
+        // When Token expired, clear cookies and set authenticated to false
         Cookies.remove("token");
         Cookies.remove("admin");
         Cookies.remove("setupTime");
         setAuthenticated(false);
         setIsAdmin(false);
+        navigate("/login"); // Redirect to login page
       } else {
         setAuthenticated(true);
         const admin = Cookies.get("admin");
         setIsAdmin(admin === "true");
+        if (location.pathname === "/") {
+          navigate("/dashboard"); // Redirect to dashboard page
+        }
       }
     } else {
       setAuthenticated(false);
       setIsAdmin(false);
+      if (location.pathname === "/") {
+        navigate("/login"); // Redirect to login page
+      }
     }
   };
 
   useEffect(() => {
     checkAuthentication();
   }, []);
+
   return (
     <div className="App">
       <div className={`${theme}-theme`}>

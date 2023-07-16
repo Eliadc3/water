@@ -1,43 +1,37 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import styles from "./AppHeader.module.css";
 import img from "../img/water_logo.png";
-import { ThemeContext } from "../components/themes/ThemeContext";
-import Logout from "../components/authentication/Logout";
+import DropdownMenu from "../components/dropdown/DropdownMenu";
+// import DropdownMenuStyles from "../components/dropdown/DropdownMenu.module.css";
+
+import Cookies from "js-cookie";
 
 const AppHeader = ({ isAdmin, authenticated }) => {
-  const { theme } = useContext(ThemeContext);
-  const LINKS = [
-    ...(isAdmin
-      ? [
-          { label: "dashboard", path: "/dashboard" },
-          { label: "users", path: "/users" },
-          { label: "Baseline", path: "/baseline" },
-        ]
-      : []),
-  ];
+  const firstName = Cookies.get("firstname");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prevState) => !prevState);
+  };
 
   return (
-    <header className={styles.header}>
-      <img className={styles.img} src={img} alt="" />
-
-      <nav>
-        <ul>
-          {LINKS.map((e) => (
-            <li key={e.path}>
-              <Link
-                style={{
-                  color: theme === "dark" ? "#F8F6F4" : "#454545",
-                }}
-                to={e.path}
-              >
-                {e.label}
-              </Link>
-            </li>
-          ))}
-          {authenticated && <Logout />}
-        </ul>
-      </nav>
+    <header>
+      <div className={styles.header}>
+        <img className={styles.img} src={img} alt="" />
+        <div className={styles.rightHeader}>
+          {firstName}
+          {firstName && (
+            <span className={styles.dropdownButton} onClick={toggleDropdown}>
+              <i className="fa fa-bars" />
+            </span>
+          )}
+          <div>
+            {isDropdownOpen && (
+              <DropdownMenu isAdmin={isAdmin} authenticated={authenticated} />
+            )}
+          </div>
+        </div>
+      </div>
     </header>
   );
 };

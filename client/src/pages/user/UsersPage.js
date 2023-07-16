@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import notifStyles from "../css/Notifications.module.css";
+import "../../components/themes/themes.css";
+import styles from "../css/Dashboard_Page.module.css";
 import ReactDataGrid from "@inovua/reactdatagrid-community";
 import "@inovua/reactdatagrid-community/index.css";
 import RegisterPage from "./RegisterPage";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../../components/themes/ThemeContext";
+
 import Cookies from "js-cookie";
 
 const Users = () => {
+  const { theme } = useContext(ThemeContext);
+
   const [usersData, setUsersData] = useState([]);
   const [showRegisterationForm, setShowRegisterationForm] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
@@ -144,7 +150,7 @@ const Users = () => {
     {
       name: "admin",
       header: "Admin",
-      defaultFlex: 0.3,
+      defaultFlex: 0.4,
       render: ({ value }) => (value ? "Yes" : "No"),
       editor: "checkbox",
     },
@@ -165,14 +171,27 @@ const Users = () => {
     {
       name: "actions",
       header: "Actions",
-      defaultFlex: 1,
+      defaultFlex: 1.3,
       render: ({ data }) => (
         <div>
-          <button onClick={() => handleEditUser(data)}>Edit</button>
-          <button onClick={() => handleChangePassword(data)}>
+          <button
+            className={styles.gridbtn}
+            onClick={() => handleEditUser(data)}
+          >
+            Edit
+          </button>
+          <button
+            className={styles.gridbtn}
+            onClick={() => handleChangePassword(data)}
+          >
             Change Password
           </button>
-          <button onClick={() => handleDeleteUser(data)}>Delete</button>
+          <button
+            className={styles.gridbtn}
+            onClick={() => handleDeleteUser(data)}
+          >
+            Delete
+          </button>
         </div>
       ),
     },
@@ -182,7 +201,9 @@ const Users = () => {
     <div className="m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl">
       <h2>Users</h2>
 
-      <button onClick={handleAddUser}>Add a New User</button>
+      <button className={styles.btn} onClick={handleAddUser}>
+        Add a New User
+      </button>
 
       <div className={notifStyles.container}>
         {showRegisterationForm ? (
@@ -199,7 +220,9 @@ const Users = () => {
         ) : showChangePasswordForm ? (
           <div className="modal">
             <div className="modal-content">
-              <h3>Change Password</h3>
+              <div className={styles.btn}>
+                <h3>Change Password</h3>
+              </div>
               <ChangePasswordForm
                 user={selectedUser}
                 onCancel={handleChangePasswordCancel}
@@ -222,20 +245,25 @@ const Users = () => {
                 </div>
               </div>
             )}
-            <ReactDataGrid
-              key={usersData.length}
-              id="gridcomp"
-              dataSource={usersData}
-              columns={customersGrid.map((column) => ({
-                ...column,
-                setUserData: setUsersData,
-              }))}
-              style={{ height: 800 }} // Set the height or adjust it according to your needs
-              editable
-              onEditComplete={handleEditComplete}
-              pagination="true"
-              defaultPageSize={10} // Set the desired page size
-            />
+            <div className={`${theme}-theme`}>
+              <ReactDataGrid
+                key={usersData.length}
+                id="gridcomp"
+                dataSource={usersData}
+                columns={customersGrid.map((column) => ({
+                  ...column,
+                  setUserData: setUsersData,
+                }))}
+                style={{
+                  height: 800,
+                  color: theme === "dark" ? "#FFFFFF" : "#000000",
+                }} // Set the height or adjust it according to your needs
+                editable
+                onEditComplete={handleEditComplete}
+                pagination="true"
+                defaultPageSize={10} // Set the desired page size
+              />
+            </div>
           </div>
         )}
       </div>

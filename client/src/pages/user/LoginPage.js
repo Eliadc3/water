@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
+import "../../components/themes/themes.css";
+import { ThemeContext } from "../../components/themes/ThemeContext";
 import styles from "../css/UserForm.module.css";
 import notifStyles from "../css/Notifications.module.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 
 const LoginPage = ({ checkAuthentication }) => {
+  const { theme } = useContext(ThemeContext);
+
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -52,20 +56,6 @@ const LoginPage = ({ checkAuthentication }) => {
         }
       );
       if (res.status === 201) {
-        const setupTime = new Date().getTime(); // Get the current time
-
-        // const minutes = 2; // Set the expiration time for the cookie
-        // // Save token as a cookie
-        // Cookies.set("token", res.data.token, {
-        //   expires: minutes / (24 * 60), // Convert minutes to days
-        // });
-        // Cookies.set("admin", res.data.admin, {
-        //   expires: minutes / (24 * 60), // Convert minutes to days
-        // });
-        // Cookies.set("setupTime", setupTime, {
-        //   expires: minutes / (24 * 60),
-        // });
-
         const hours = 1; // Set the expiration time for the cookie
         // Save token as a cookie
         Cookies.set("token", res.data.token, {
@@ -74,6 +64,10 @@ const LoginPage = ({ checkAuthentication }) => {
         Cookies.set("admin", res.data.admin, {
           expires: hours / 24,
         });
+        Cookies.set("firstname", res.data.firstname, {
+          expires: hours / 24,
+        });
+
         checkAuthentication();
 
         // redirect to uploadfile page
@@ -108,49 +102,56 @@ const LoginPage = ({ checkAuthentication }) => {
           </div>
         </div>
       )}
-      <div className={styles.loginForm}>
-        <div className={styles.formName}>Login</div>
-        <form className="form-body" onSubmit={handleSubmit}>
-          {errors.length > 0 && (
-            <div className={styles.errorContainer}>
-              <div className={styles.errorTitle}></div>
-              <ul className={styles.no_bullets}>
-                {errors.map((error, index) => (
-                  <li key={index}>{error.message}</li>
-                ))}
-              </ul>
+      <div className={`${theme}-theme`}>
+        <div
+          className={styles.loginForm}
+          style={{
+            color: theme === "dark" ? "#F8F6F4" : "#454545",
+          }}
+        >
+          <div className={styles.formName}>Login</div>
+          <form className="form-body" onSubmit={handleSubmit}>
+            {errors.length > 0 && (
+              <div className={styles.errorContainer}>
+                <div className={styles.errorTitle}></div>
+                <ul className={styles.no_bullets}>
+                  {errors.map((error, index) => (
+                    <li key={index}>{error.message}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div className="usernameOrEmail">
+              <input
+                type="text"
+                id="usernameOrEmail"
+                placeholder="Username or Email"
+                value={usernameOrEmail}
+                onChange={handleInputChange}
+              />
             </div>
-          )}
-          <div className="usernameOrEmail">
-            <input
-              type="text"
-              id="usernameOrEmail"
-              placeholder="Username or Email"
-              value={usernameOrEmail}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className={styles.passwordContainer}>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              placeholder="Enter Password"
-              value={password}
-              onChange={handleInputChange}
-            />
-            <button
-              type="button"
-              className={styles.showPasswordButton}
-              onClick={toggleShowPassword}
-            >
-              {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+            <div className={styles.passwordContainer}>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                placeholder="Enter Password"
+                value={password}
+                onChange={handleInputChange}
+              />
+              <button
+                type="button"
+                className={styles.showPasswordButton}
+                onClick={toggleShowPassword}
+              >
+                {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+              </button>
+            </div>
+            <button type="submit" className={styles.btn}>
+              submit
             </button>
-          </div>
-          <button type="submit" className={styles.btn}>
-            submit
-          </button>
-          <div></div>
-        </form>
+            <div></div>
+          </form>
+        </div>
       </div>
     </div>
   );

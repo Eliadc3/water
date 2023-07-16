@@ -107,7 +107,7 @@ const DashboardPage = () => {
   return (
     <div className={styles.body}>
       <div className={styles.container}>
-        <div>
+        <div className={styles.uploadFile}>
           <h3>Upload File</h3>
           <UploadFile />
         </div>
@@ -117,7 +117,7 @@ const DashboardPage = () => {
         ) : chartData.length === 0 ? (
           <h2>No data to display, please upload file.</h2>
         ) : (
-          <div>
+          <div className={styles.timeRange}>
             <Card>
               <h3>Choose a period average to display:</h3>
               {selectedTimeRange && (
