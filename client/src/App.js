@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
-import { ThemeContext } from "./components/themes/ThemeContext";
-import "./components/themes/themes.css";
 
 import "./App.css";
 import MainLayout from "./layouts/MainLayout";
@@ -14,7 +12,6 @@ import BaselineDataPage from "./pages/content/baselineDataPage";
 import AppHeader from "./layouts/AppHeader";
 
 function App() {
-  const { theme } = useContext(ThemeContext);
   const [authenticated, setAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
@@ -58,48 +55,43 @@ function App() {
 
   return (
     <div className="App">
-      <div className={`${theme}-theme`}>
-        <AppHeader isAdmin={isAdmin} authenticated={authenticated} />
-        <MainLayout>
-          <Routes>
-            <Route
-              path="/login"
-              element={<LoginPage checkAuthentication={checkAuthentication} />}
-            />
-            <Route
-              path="/register"
-              element={
-                <RegisterPage authenticated={authenticated} isAdmin={isAdmin} />
-              }
-            />
+      <AppHeader isAdmin={isAdmin} authenticated={authenticated} />
+      <MainLayout>
+        <Routes>
+          <Route
+            path="/login"
+            element={<LoginPage checkAuthentication={checkAuthentication} />}
+          />
+          <Route
+            path="/register"
+            element={
+              <RegisterPage authenticated={authenticated} isAdmin={isAdmin} />
+            }
+          />
 
-            <Route
-              path="/users"
-              element={
-                <UsersPage authenticated={authenticated} isAdmin={isAdmin} />
-              }
-            />
-            <Route
-              path="/baseline"
-              element={
-                <BaselineDataPage
-                  authenticated={authenticated}
-                  isAdmin={isAdmin}
-                />
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <DashboardPage
-                  authenticated={authenticated}
-                  isAdmin={isAdmin}
-                />
-              }
-            />
-          </Routes>
-        </MainLayout>
-      </div>
+          <Route
+            path="/users"
+            element={
+              <UsersPage authenticated={authenticated} isAdmin={isAdmin} />
+            }
+          />
+          <Route
+            path="/baseline"
+            element={
+              <BaselineDataPage
+                authenticated={authenticated}
+                isAdmin={isAdmin}
+              />
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <DashboardPage authenticated={authenticated} isAdmin={isAdmin} />
+            }
+          />
+        </Routes>
+      </MainLayout>
     </div>
   );
 }

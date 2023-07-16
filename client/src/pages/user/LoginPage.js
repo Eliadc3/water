@@ -2,16 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
-import "../../components/themes/themes.css";
-import { ThemeContext } from "../../components/themes/ThemeContext";
 import styles from "../css/UserForm.module.css";
 import notifStyles from "../css/Notifications.module.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 
 const LoginPage = ({ checkAuthentication }) => {
-  const { theme } = useContext(ThemeContext);
-
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -102,11 +98,11 @@ const LoginPage = ({ checkAuthentication }) => {
           </div>
         </div>
       )}
-      <div className={`${theme}-theme`}>
+      <div>
         <div
           className={styles.loginForm}
           style={{
-            color: theme === "dark" ? "#F8F6F4" : "#454545",
+            color: "#F8F6F4",
           }}
         >
           <div className={styles.formName}>Login</div>

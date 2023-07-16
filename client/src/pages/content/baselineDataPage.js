@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import notifStyles from "../css/Notifications.module.css";
-import { ThemeContext } from "../../components/themes/ThemeContext";
-import "../../components/themes/themes.css";
 
 import {
   Table,
@@ -17,8 +15,6 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 const BaselineData = () => {
-  const { theme } = useContext(ThemeContext);
-
   const [baselineData, setBaselineData] = useState([]);
   const [CIT_01, setCIT_01] = useState("");
   const [FIT_01, setFIT_01] = useState("");
@@ -131,7 +127,7 @@ const BaselineData = () => {
           </div>
         </div>
       )}
-      <div className={`${theme}-theme`}>
+      <div>
         <TableContainer>
           <Table>
             <TableHead>
@@ -153,7 +149,7 @@ const BaselineData = () => {
                 <TableCell>CIT_01</TableCell>
                 <TableCell
                   style={{
-                    color: theme === "dark" ? "#FFFFFF" : "#000000",
+                    color: "#FFFFFF",
                   }}
                 >
                   <TextField

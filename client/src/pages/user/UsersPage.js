@@ -1,20 +1,16 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import notifStyles from "../css/Notifications.module.css";
-import "../../components/themes/themes.css";
 import styles from "../css/Dashboard_Page.module.css";
 import ReactDataGrid from "@inovua/reactdatagrid-community";
 import "@inovua/reactdatagrid-community/index.css";
 import RegisterPage from "./RegisterPage";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useNavigate } from "react-router-dom";
-import { ThemeContext } from "../../components/themes/ThemeContext";
 
 import Cookies from "js-cookie";
 
 const Users = () => {
-  const { theme } = useContext(ThemeContext);
-
   const [usersData, setUsersData] = useState([]);
   const [showRegisterationForm, setShowRegisterationForm] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
@@ -245,7 +241,7 @@ const Users = () => {
                 </div>
               </div>
             )}
-            <div className={`${theme}-theme`}>
+            <div>
               <ReactDataGrid
                 key={usersData.length}
                 id="gridcomp"
@@ -256,7 +252,7 @@ const Users = () => {
                 }))}
                 style={{
                   height: 800,
-                  color: theme === "dark" ? "#FFFFFF" : "#000000",
+                  color: "black",
                 }} // Set the height or adjust it according to your needs
                 editable
                 onEditComplete={handleEditComplete}

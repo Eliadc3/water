@@ -3,7 +3,6 @@ import axios from "axios";
 import { Button } from "@mui/material";
 import styles from "./UploadFile.module.css";
 import LoadingBar from "react-top-loading-bar";
-import { ThemeContext } from "../themes/ThemeContext";
 
 const UploadFile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -12,7 +11,6 @@ const UploadFile = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const loadingBarRef = useRef(null);
-  const { theme } = useContext(ThemeContext);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -53,11 +51,7 @@ const UploadFile = () => {
 
   return (
     <div>
-      <LoadingBar
-        color={theme === "dark" ? "#ffffff" : "#000000"}
-        height={"4px"}
-        ref={loadingBarRef}
-      />
+      <LoadingBar color={"black"} height={"4px"} ref={loadingBarRef} />
       <div className={styles.buttons}>
         <Button className={styles.button} variant="contained" component="label">
           Select File
@@ -72,7 +66,7 @@ const UploadFile = () => {
           Upload
         </Button>
       </div>
-      <div className={styles.selectedFileName}>{selectedFileName}</div>{" "}
+      <div className={styles.selectedFileName}>{selectedFileName}</div>
       {error && <div>{error}</div>}
     </div>
   );

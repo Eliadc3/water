@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import ApexCharts from "apexcharts";
-import { ThemeContext } from "../themes/ThemeContext";
 
 const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
   const chartRef = useRef(null);
-  const { theme } = useContext(ThemeContext);
-  const themeColor = theme === "dark" ? "#ffffff" : "#000000";
+  const textColor = "black";
 
   useEffect(() => {
     if (chartRef.current) {
@@ -15,7 +13,7 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
           height: 350,
           dropShadow: {
             enabled: true,
-            color: "#000",
+            color: "blue",
             top: 18,
             left: 7,
             blur: 10,
@@ -33,7 +31,7 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
           text: title,
           align: "center",
           style: {
-            color: `${theme === "dark" ? "#ffffff" : "#000000"}`,
+            color: textColor,
           },
         },
 
@@ -59,7 +57,7 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
             type: "area",
             data: series,
             style: {
-              color: themeColor,
+              color: textColor,
             },
             dataLabels: {
               enabled: true,
@@ -76,14 +74,14 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
           categories: xCategories,
           labels: {
             style: {
-              colors: themeColor,
+              colors: textColor,
             },
           },
         },
         yaxis: {
           labels: {
             style: {
-              colors: themeColor,
+              colors: textColor,
             },
           },
         },
@@ -99,11 +97,11 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
         chart.destroy();
       };
     }
-  }, [chartId, series, baselineSeries, title, xCategories, theme]);
+  }, [chartId, series, baselineSeries, title, xCategories]);
   return (
     <div
       style={{
-        color: "#000000",
+        color: textColor,
       }}
       ref={chartRef}
       id={chartId}

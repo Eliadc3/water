@@ -59,15 +59,9 @@
   transform: translateY(1px);
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2),
     0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
-    background-color:darkcyan
-}
-.light-theme .btn {
-  background-color: #1976d2;
+    background-color: #296db2;
 }
 
-.dark-theme .btn {
-  background-color: darkcyan;
-}
 
 
 .gridbtn {
@@ -109,10 +103,3 @@
   background-color: darkcyan
 }
 
-.light-theme .gridbtn {
-  background-color: #1976d2;
-}
-
-.dark-theme .gridbtn {
-  background-color: darkcyan;
-}

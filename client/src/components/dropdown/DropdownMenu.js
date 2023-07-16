@@ -1,13 +1,9 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import DropdownMenuStyles from "./DropdownMenu.module.css";
-import ThemeToggler from "../themes/ThemeToggler";
-import { ThemeContext } from "../themes/ThemeContext";
 import Logout from "../authentication/Logout";
 
 const DropdownMenu = ({ isAdmin, authenticated }) => {
-  const { theme } = useContext(ThemeContext);
-
   const LINKS = [
     ...(isAdmin
       ? [
@@ -25,7 +21,7 @@ const DropdownMenu = ({ isAdmin, authenticated }) => {
             <li key={index}>
               <Link
                 style={{
-                  color: theme === "dark" ? "#F8F6F4" : "#2d363c",
+                  color: "#F8F6F4",
                 }}
                 to={link.path}
               >
@@ -33,9 +29,7 @@ const DropdownMenu = ({ isAdmin, authenticated }) => {
               </Link>
             </li>
           ))}
-          <li>
-            <ThemeToggler />
-          </li>
+
           {authenticated && (
             <li>
               <Logout />
