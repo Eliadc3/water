@@ -46,7 +46,7 @@ const Users = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/users/users");
+      const response = await axios.get("http://localhost:5000/users/get-users");
       const data = response.data;
 
       console.log(data);
@@ -73,7 +73,7 @@ const Users = () => {
     const updatedUser = { ...usersData[rowId], [columnId]: value };
     try {
       await axios.post(
-        `http://localhost:5000/users/users/${updatedUser._id}`,
+        `http://localhost:5000/users/update/${updatedUser._id}`,
         updatedUser,
         {
           headers: { "Content-Type": "application/json" },
@@ -91,7 +91,7 @@ const Users = () => {
 
   const handleDeleteUser = async (user) => {
     try {
-      await axios.delete(`http://localhost:5000/users/users/${user._id}`);
+      await axios.delete(`http://localhost:5000/users/delete/${user._id}`);
       setNotification("User deleted successfully.");
       fetchData(); // Fetch updated data after deletion
     } catch (error) {
@@ -115,7 +115,7 @@ const Users = () => {
   ) => {
     try {
       await axios.post(
-        `http://localhost:5000/users/users/${user._id}/change-password`,
+        `http://localhost:5000/users/change-password/${user._id}`,
         {
           oldPassword,
           newPassword,

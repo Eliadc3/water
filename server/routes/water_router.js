@@ -19,7 +19,6 @@ const app = express();
 router.get("/baseline", async (req, res) => {
   try {
     const data = await OutputBaselineWaterModel.find({});
-    console.log(data);
     res.json(data);
   } catch (err) {
     console.error("Error retrieving data from database:", err);
@@ -44,7 +43,6 @@ router.post(
 router.get("/getdailydata", async (req, res) => {
   try {
     const data = await DailyWaterModel.find({});
-    console.log(data);
     res.json(data);
   } catch (err) {
     console.error("Error retrieving data from database:", err);
@@ -55,7 +53,6 @@ router.get("/getdailydata", async (req, res) => {
 router.get("/getweeklydata", async (req, res) => {
   try {
     const data = await WeeklyWaterModel.find({});
-    console.log(data);
     res.json(data);
   } catch (err) {
     console.error("Error retrieving data from database:", err);
@@ -65,7 +62,6 @@ router.get("/getweeklydata", async (req, res) => {
 router.get("/getmonthlydata", async (req, res) => {
   try {
     const data = await MonthlyWaterModel.find({});
-    console.log(data);
     res.json(data);
   } catch (err) {
     console.error("Error retrieving data from database:", err);

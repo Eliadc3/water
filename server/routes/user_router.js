@@ -17,15 +17,15 @@ router.post(
 router.post("/logout", userController.logout);
 
 // Get all users route
-router.get("/users", userController.getUsers);
+router.get("/get-users", userController.getUsers);
 
 // Delete user
-router.delete("/users/:userId", userController.deleteUser);
+router.delete("/delete/:userId", userController.deleteUser);
 
 // Update user
-router.post("/users/:userId", userController.updateUser);
+router.post("/update/:userId", userController.updateUser);
 
 // Change password
-router.post("/users/:userId/change-password", userController.changePassword);
+router.post("/change-password/:userId", userController.changePassword);
 
 module.exports = router;

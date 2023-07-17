@@ -118,19 +118,19 @@ body {
             color: darken(#1fb5bf, 5%);
         }
         
-.error {
-    color: red;
-    margin-top: 10px;
-}
 ul.no_bullets {
     list-style-type: none;
-    /* Remove bullets */
     padding: 0;
-    /* Remove padding */
     margin: 0;
-    /* Remove margins */
+    color: black;
 }
+
 .errorContainer { 
+    text-align: left;
+    font-size: larger;
+    margin-bottom: 30px;
+}
+.errorContainerLogin {
     text-align: center;
     font-size: larger;
     margin-bottom: 30px;
@@ -138,13 +138,7 @@ ul.no_bullets {
 .errorContainer .errorTitle {
     text-align: center;
 }
-.notification {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
+
 
 .passwordContainer {
     position: relative;

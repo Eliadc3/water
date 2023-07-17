@@ -24,7 +24,7 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
         dataLabels: {
           enabled: true,
           formatter: function(val, { seriesIndex }) {
-            return seriesIndex === 0 ? val.toString() : "";
+            return seriesIndex === 0 && val !== null ? val.toString() : "";
           },
         },
         title: {
@@ -44,7 +44,7 @@ const LineChart = ({ chartId, series, baselineSeries, title, xCategories }) => {
         },
         grid: {
           row: {
-            colors: ["#F6F1F1", "transparent"],
+            colors: ["gray", "transparent"],
             opacity: 0.5,
           },
         },

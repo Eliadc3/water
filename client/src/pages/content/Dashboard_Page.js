@@ -22,15 +22,18 @@ const DashboardPage = () => {
   }, []);
 
   useEffect(() => {
-    const cachedData = getCachedData();
-    if (cachedData) {
-      setChartData(cachedData.chartData);
-      setBaselineChartData(cachedData.baselineChartData);
-      setIsLoading(false);
-    } else {
-      fetchData("http://localhost:5000/water/getdailydata");
-    }
+    fetchData("http://localhost:5000/water/getdailydata");
   }, []);
+  // useEffect(() => {
+  //   const cachedData = getCachedData();
+  //   if (cachedData) {
+  //     setChartData(cachedData.chartData);
+  //     setBaselineChartData(cachedData.baselineChartData);
+  //     setIsLoading(false);
+  //   } else {
+  //
+  //   }
+  // }, []);
 
   const fetchData = async (url) => {
     try {
@@ -73,25 +76,25 @@ const DashboardPage = () => {
 
       setBaselineChartData(baselineChartData);
       //---------------------------------------------------------------------//
-      cachedData(chartData, baselineChartData);
+      // cachedData(chartData, baselineChartData);
     } catch (error) {
       setIsLoading(false);
       console.error("Error fetching data:", error);
     }
   };
 
-  const cachedData = (chartData, baselineChartData) => {
-    const cachedData = {
-      chartData,
-      baselineChartData,
-    };
-    localStorage.setItem("dashboardData", JSON.stringify(cachedData));
-  };
+  // const cachedData = (chartData, baselineChartData) => {
+  //   const cachedData = {
+  //     chartData,
+  //     baselineChartData,
+  //   };
+  //   localStorage.setItem("dashboardData", JSON.stringify(cachedData));
+  // };
 
-  const getCachedData = () => {
-    const cachedData = localStorage.getItem("dashboardData");
-    return cachedData ? JSON.parse(cachedData) : null;
-  };
+  // const getCachedData = () => {
+  //   const cachedData = localStorage.getItem("dashboardData");
+  //   return cachedData ? JSON.parse(cachedData) : null;
+  // };
 
   const onClickTimeRange = async (timeRange) => {
     const url =

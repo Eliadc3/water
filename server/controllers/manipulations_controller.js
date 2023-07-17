@@ -42,15 +42,17 @@ exports.manipulations = async (req, res) => {
     // Check if there is already exists record in the db.
     const existsRecords = await WaterModel.find({}).lean();
     const existingTimes = existsRecords.map((record) => record.Time);
+
+    // Filter the data to see if it matches the condition and doesn't have a matching Time.
     const newRecords = JsonArray.filter((jsonObj) => {
-      return !existingTimes.includes(jsonObj.Time);
+      const isSystemOn = parseFloat(jsonObj.System_On_Off_bit) === 1;
+      const isNewTime = !existingTimes.includes(jsonObj.Time);
+      return isSystemOn && isNewTime;
     });
 
     // filter the data to see if this is number or the record was accurate
     const manipulatedData = newRecords
-      .filter((jsonObj) => {
-        return parseFloat(jsonObj.System_On_Off_bit) === 1;
-      })
+
       // parse all the data to number for the manipulations
       .map((jsonObj) => ({
         Time: jsonObj.Time,
@@ -70,30 +72,8 @@ exports.manipulations = async (req, res) => {
         FIT_01: parseFloat(jsonObj.FIT_01),
       }));
 
-    // let Stage1_concentrate_flow_m3h,
-    //   Stage2_concentrate_factor,
-    //   Stage1_feed_TDS_mgl,
-    //   TCF,
-    //   Permeate_TDS_mgl,
-    //   Stage1_pressure_drop_bar,
-    //   Stage1_average_flow_m3h,
-    //   Stage2_pressure_drop_bar,
-    //   Stage2_average_flow_m3h,
-    //   Stage1_concentrate_factor,
-    //   Salt_rejection,
-    //   Stage1_normalized_pressure_drop_bar,
-    //   Stage2_normalized_pressure_drop_bar,
-    //   Stage1_concentrate_TDS_mgl,
-    //   Stage2_concentrate_TDS_mgl,
-    //   Salt_passage,
-    //   Stage1_aNDP,
-    //   Stage2_aNDP,
-    //   Normalized_salt_rejection,
-    //   Stage1_baseline_net_permeate_flow,
-    //   Stage2_baseline_net_permeate_flow;
-
     // first iteration loop
-    const firstIterationLoop = manipulatedData.map((curr, index) => {
+    const firstIterationLoop = manipulatedData.map((curr) => {
       const Stage1_concentrate_flow_m3h =
         parseFloat(
           curr.FIT_02 === "NaN" || curr.FIT_02 === 0 ? 0 : curr.FIT_02
@@ -169,7 +149,7 @@ exports.manipulations = async (req, res) => {
     });
 
     // second iteration loop
-    const secondIterationLoop = firstIterationLoop.map((curr, index) => {
+    const secondIterationLoop = firstIterationLoop.map((curr) => {
       const Stage1_concentrate_factor =
         (parseFloat(curr.FIT_01 === "NaN" ? 0 : curr.FIT_01) +
           curr.Stage1_concentrate_flow_m3h) /
@@ -208,7 +188,7 @@ exports.manipulations = async (req, res) => {
     });
 
     // third iteration loop
-    const thirdItertationLoop = secondIterationLoop.map((curr, index) => {
+    const thirdItertationLoop = secondIterationLoop.map((curr) => {
       const Stage1_concentrate_TDS_mgl =
         curr.Stage1_feed_TDS_mgl * curr.Stage1_concentrate_factor;
       const fixed_Stage1_concentrate_TDS_mgl = parseFloat(
@@ -226,7 +206,7 @@ exports.manipulations = async (req, res) => {
     });
 
     // third iteration loop
-    const fourthIterationLoop = thirdItertationLoop.map((curr, index) => {
+    const fourthIterationLoop = thirdItertationLoop.map((curr) => {
       const Stage2_concentrate_TDS_mgl =
         curr.Stage1_concentrate_TDS_mgl * curr.Stage2_concentrate_factor;
       const fixed_Stage2_concentrate_TDS_mgl = parseFloat(
@@ -258,7 +238,7 @@ exports.manipulations = async (req, res) => {
     });
 
     // fifth iteration loop
-    const fifthIterationLoop = fourthIterationLoop.map((curr, index) => {
+    const fifthIterationLoop = fourthIterationLoop.map((curr) => {
       const Stage2_aNDP =
         (curr.PIT_05 + curr.PIT_06) * (14.5 / 2) -
         (curr.Stage1_concentrate_TDS_mgl + curr.Stage2_concentrate_TDS_mgl) /
@@ -283,7 +263,7 @@ exports.manipulations = async (req, res) => {
     });
 
     // sixth iteration loop
-    const sixthIterationLoop = fifthIterationLoop.map((curr, index) => {
+    const sixthIterationLoop = fifthIterationLoop.map((curr) => {
       const Stage2_baseline_net_permeate_flow =
         curr.FIT_02 *
         (curr.Stage2_aNDP / curr.Stage2_aNDP) *
@@ -431,10 +411,10 @@ exports.manipulations = async (req, res) => {
     );
 
     // Save all the data from the csv file in object by the schema
-    // const results = await WaterModel.insertMany(sixthIterationLoop);
+    const results = await WaterModel.insertMany(sixthIterationLoop);
     return res.status(201).json({
       message: "Data successfully saved.",
-      // results,
+      results,
       dailyAverages: dailyResults,
       weeklyAverages: weeklyResults,
       monthlyAverages: monthlyResults,

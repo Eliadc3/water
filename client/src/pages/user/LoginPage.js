@@ -102,13 +102,13 @@ const LoginPage = ({ checkAuthentication }) => {
         <div
           className={styles.loginForm}
           style={{
-            color: "#F8F6F4",
+            color: "white",
           }}
         >
           <div className={styles.formName}>Login</div>
           <form className="form-body" onSubmit={handleSubmit}>
             {errors.length > 0 && (
-              <div className={styles.errorContainer}>
+              <div className={styles.errorContainerLogin}>
                 <div className={styles.errorTitle}></div>
                 <ul className={styles.no_bullets}>
                   {errors.map((error, index) => (

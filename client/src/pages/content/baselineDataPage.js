@@ -117,13 +117,23 @@ const BaselineData = () => {
       {notification && (
         <div className={notifStyles.notificationContainer}>
           <div className={notifStyles.notificationBox}>
-            <div
-              className={`${notifStyles.notification} ${
-                notification.fadeOut ? notifStyles.fadeOut : ""
-              }`}
-            >
-              {notification}
-            </div>
+            {notification === "Data saved successfully." ? (
+              <div
+                className={`${notifStyles.notification} ${
+                  notification.fadeOut ? notifStyles.fadeOut : ""
+                }`}
+              >
+                {notification}
+              </div>
+            ) : (
+              <div
+                className={`${notifStyles.badnotification} ${
+                  notification.fadeOut ? notifStyles.fadeOut : ""
+                }`}
+              >
+                {notification}
+              </div>
+            )}
           </div>
         </div>
       )}
