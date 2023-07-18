@@ -70,7 +70,7 @@ const RegisterPage = ({
       if (selectedUser) {
         // Update existing user
         res = await axios.post(
-          `http://localhost:5000/users/users/${selectedUser._id}`,
+          `http://localhost:5000/users/update/${selectedUser._id}`,
           {
             username,
             firstname,

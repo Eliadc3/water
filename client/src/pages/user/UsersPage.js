@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import notifStyles from "../css/Notifications.module.css";
 import styles from "../css/Dashboard_Page.module.css";
@@ -9,13 +9,16 @@ import ChangePasswordForm from "./ChangePasswordForm";
 import { useNavigate } from "react-router-dom";
 
 import Cookies from "js-cookie";
+import DeleteConfirmationForm from "./DeleteConfirmationPage";
 
 const Users = () => {
   const [usersData, setUsersData] = useState([]);
   const [showRegisterationForm, setShowRegisterationForm] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [notification, setNotification] = useState(null);
+
   const navigate = useNavigate();
 
   const checkAuthentication = () => {
@@ -90,13 +93,24 @@ const Users = () => {
   };
 
   const handleDeleteUser = async (user) => {
-    try {
-      await axios.delete(`http://localhost:5000/users/delete/${user._id}`);
-      setNotification("User deleted successfully.");
-      fetchData(); // Fetch updated data after deletion
-    } catch (error) {
-      console.error("Error deleting user: ", error);
+    setSelectedUser(user);
+    setShowDeleteConfirmation(true);
+  };
+
+  const handleConfirmDelete = async (confirm) => {
+    if (confirm && selectedUser) {
+      try {
+        await axios.delete(
+          `http://localhost:5000/users/delete/${selectedUser._id}`
+        );
+        setNotification("User deleted successfully.");
+        fetchData(); // Fetch updated data after deletion
+      } catch (error) {
+        console.error("Error deleting user: ", error);
+      }
     }
+    setSelectedUser(null);
+    setShowDeleteConfirmation(false);
   };
 
   const handleChangePassword = (user) => {
@@ -130,6 +144,7 @@ const Users = () => {
       setSelectedUser(null);
     } catch (error) {
       console.error("Error changing password: ", error);
+      setNotification("Error changing password.");
     }
   };
 
@@ -195,12 +210,16 @@ const Users = () => {
 
   return (
     <div className="m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl">
-      <h2>Users</h2>
-
-      <button className={styles.btn} onClick={handleAddUser}>
-        Add a New User
-      </button>
-
+      <div className={styles.pageName}>
+        {showChangePasswordForm || showRegisterationForm ? null : (
+          <h2>Users</h2>
+        )}
+      </div>
+      {showChangePasswordForm || showRegisterationForm ? null : (
+        <button className={styles.btn} onClick={handleAddUser}>
+          Add a New User
+        </button>
+      )}
       <div className={notifStyles.container}>
         {showRegisterationForm ? (
           <div className="modal">
@@ -216,13 +235,11 @@ const Users = () => {
         ) : showChangePasswordForm ? (
           <div className="modal">
             <div className="modal-content">
-              <div className={styles.btn}>
-                <h3>Change Password</h3>
-              </div>
               <ChangePasswordForm
                 user={selectedUser}
                 onCancel={handleChangePasswordCancel}
                 onChangePassword={handleChangePasswordComplete}
+                setNotification={setNotification}
               />
             </div>
           </div>
@@ -260,6 +277,17 @@ const Users = () => {
                 defaultPageSize={10} // Set the desired page size
               />
             </div>
+            {showDeleteConfirmation && selectedUser && (
+              <div className="modal">
+                <div className="modal-content">
+                  <DeleteConfirmationForm
+                    user={selectedUser}
+                    onCancel={() => setShowDeleteConfirmation(false)}
+                    onConfirm={handleConfirmDelete}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import DropdownMenuStyles from "./DropdownMenu.module.css";
 import Logout from "../authentication/Logout";
 
-const DropdownMenu = ({ isAdmin, authenticated }) => {
+const DropdownMenu = ({ isAdmin, authenticated, closeMenu }) => {
   const LINKS = [
     ...(isAdmin
       ? [
@@ -13,6 +13,25 @@ const DropdownMenu = ({ isAdmin, authenticated }) => {
         ]
       : []),
   ];
+
+  useEffect(() => {
+    const handleLinkClick = () => {
+      closeMenu();
+    };
+
+    const links = document.querySelectorAll(
+      `.${DropdownMenuStyles.dropdownMenu} a`
+    );
+    links.forEach((link) => {
+      link.addEventListener("click", handleLinkClick);
+    });
+
+    return () => {
+      links.forEach((link) => {
+        link.removeEventListener("click", handleLinkClick);
+      });
+    };
+  }, [closeMenu]);
   return (
     <div>
       <div className={DropdownMenuStyles.dropdownMenu}>

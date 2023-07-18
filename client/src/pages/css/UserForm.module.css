@@ -21,12 +21,12 @@ body {
     -o-transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    
-        box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 }
 
 
-.loginForm form{
+.loginForm form {
     display: block;
     width: 100%;
     padding: 2em;
@@ -35,10 +35,10 @@ body {
 
 .formName {
     width: 100%;
-    color: lighten(#6378e1, 20%);
+    color: white;
     font-family: 'open sans condensed';
     font-size: 2em;
-    display:inline-block;
+    display: inline-block;
     background: #2d363c;
     width: 100%;
     text-transform: uppercase;
@@ -63,6 +63,7 @@ body {
     color: #757575;
     font-size: 1rem;
 }
+
 .loginForm input:focus {
     outline: none;
 }
@@ -78,23 +79,16 @@ body {
     box-shadow: inset 0px 1px 0px fadeout(white, 80%);
     margin: 0.5rem;
 }
-.loginForm .deleteUserBtn {
-    display: inline-block;
-    background: #ec4242;
-    border: 1px solid darken(#1fb5bf, 5%);
-    padding: .5em 2em;
-    color: black;
-    box-shadow: inset 0px 1px 0px fadeout(white, 80%);
-    margin: 0.5rem;
-}
+
+
 .loginForm button:hover {
-    background: lighten(#1fb5bf, 5%);
+    background: lighten(#2d363c, 5%);
     cursor: pointer;
 
 }
 
 .loginForm .btn:active {
-    background: #1fb5bf;
+    background: #2d363c;
     box-shadow: inset 0px 1px 1px fadeout(black, 90%);
 }
 
@@ -114,10 +108,11 @@ body {
     padding: 0;
     float: right;
 }
+
 .loginForm .forget:hover {
-            color: darken(#1fb5bf, 5%);
-        }
-        
+    color: darken(#1fb5bf, 5%);
+}
+
 ul.no_bullets {
     list-style-type: none;
     padding: 0;
@@ -125,16 +120,18 @@ ul.no_bullets {
     color: black;
 }
 
-.errorContainer { 
+.errorContainer {
     text-align: left;
     font-size: larger;
     margin-bottom: 30px;
 }
+
 .errorContainerLogin {
     text-align: center;
     font-size: larger;
     margin-bottom: 30px;
 }
+
 .errorContainer .errorTitle {
     text-align: center;
 }
@@ -157,4 +154,16 @@ ul.no_bullets {
     top: 50%;
     right: 10px;
     transform: translateY(-50%);
+}
+
+.deleteFormBody {
+    height: 8rem;
+    display: block;
+    width: 100%;
+    padding: 2em;
+    text-align: center;
+}
+
+.deleteFormText {
+    margin-bottom: 4%;
 }

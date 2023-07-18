@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../css/UserForm.module.css";
 import "@inovua/reactdatagrid-community/index.css";
+import notifStyles from "../css/Notifications.module.css";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
 const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
@@ -11,6 +12,7 @@ const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [badNotification, setBadNotification] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +35,7 @@ const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
       setErrors([
         { message: "An error occurred while changing the password." },
       ]);
+      setBadNotification("An error occurred. Please try again.");
     }
   };
   console.log("type: ", oldPassword);
@@ -53,94 +56,109 @@ const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
     setShowConfirmPassword(!showConfirmPassword);
   };
   return (
-    <div className={styles.loginForm}>
-      <div className={styles.formName}>Change Password</div>
-      <form className="form-body" onSubmit={handleSubmit}>
-        {errors.length > 0 && (
-          <div className={styles.errorContainer}>
-            <div className={styles.errorTitle}>
-              <h3>ERRORS</h3>
+    <div>
+      {badNotification && (
+        <div className={notifStyles.notificationContainer}>
+          <div className={notifStyles.notificationBox}>
+            <div
+              className={`${notifStyles.badnotification} ${
+                badNotification.fadeOut ? notifStyles.fadeOut : ""
+              }`}
+            >
+              {badNotification}
             </div>
-            <ul>
-              {errors.map((error, index) => (
-                <li key={index}>{error.message}</li>
-              ))}
-            </ul>
           </div>
-        )}
-        <div className={styles.passwordContainer}>
-          <div className="oldPassword">
-            <input
-              type={showOldPassword ? "text" : "password"}
-              title="oldPassword"
-              id="oldPassword"
-              placeholder="Old Password"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-              required
-            />
+        </div>
+      )}
+      <div className={styles.loginForm}>
+        <div className={styles.formName}>Change Password</div>
+        <form className="form-body" onSubmit={handleSubmit}>
+          {errors.length > 0 && (
+            <div className={styles.errorContainer}>
+              <div className={styles.errorTitle}>
+                <h3>ERRORS</h3>
+              </div>
+              <ul>
+                {errors.map((error, index) => (
+                  <li key={index}>{error.message}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className={styles.passwordContainer}>
+            <div className="oldPassword">
+              <input
+                type={showOldPassword ? "text" : "password"}
+                title="oldPassword"
+                id="oldPassword"
+                placeholder="Old Password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className={styles.showPasswordButton}
+                onClick={toggleShowOldPassword}
+              >
+                {showOldPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+              </button>
+            </div>
+          </div>
+          <div className={styles.passwordContainer}>
+            <div className="newPassword">
+              <input
+                type={showNewPassword ? "text" : "password"}
+                title="newPassword"
+                id="newPassword"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className={styles.showPasswordButton}
+                onClick={toggleShowNewPassword}
+              >
+                {showNewPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+              </button>
+            </div>
+          </div>
+          <div className={styles.passwordContainer}>
+            <div className="confirmPassword">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                title="confirmPassword"
+                id="confirmPassword"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className={styles.showPasswordButton}
+                onClick={toggleShowConfirmPassword}
+              >
+                {showConfirmPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+              </button>
+            </div>
+          </div>
+          <div>
+            <button type="submit" className={styles.btn}>
+              Change
+            </button>
             <button
               type="button"
-              className={styles.showPasswordButton}
-              onClick={toggleShowOldPassword}
+              className={styles.btn}
+              onClick={handleCloseForm}
             >
-              {showOldPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+              Cancel
             </button>
           </div>
-        </div>
-        <div className={styles.passwordContainer}>
-          <div className="newPassword">
-            <input
-              type={showNewPassword ? "text" : "password"}
-              title="newPassword"
-              id="newPassword"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-            />
-            <button
-              type="button"
-              className={styles.showPasswordButton}
-              onClick={toggleShowNewPassword}
-            >
-              {showNewPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
-            </button>
-          </div>
-        </div>
-        <div className={styles.passwordContainer}>
-          <div className="confirmPassword">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              title="confirmPassword"
-              id="confirmPassword"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            <button
-              type="button"
-              className={styles.showPasswordButton}
-              onClick={toggleShowConfirmPassword}
-            >
-              {showConfirmPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
-            </button>
-          </div>
-        </div>
-        <div>
-          <button type="submit" className={styles.btn}>
-            Change
-          </button>
-          <button
-            type="button"
-            className={styles.btn}
-            onClick={handleCloseForm}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

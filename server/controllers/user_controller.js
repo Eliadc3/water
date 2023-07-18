@@ -119,8 +119,8 @@ exports.updateUser = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
       userId,
-      { username, firstname, lastname, email, admin },
-      { new: true }
+      { username, firstname, lastname, email, admin }
+      // { new: true }
     );
 
     if (user) {

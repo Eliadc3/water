@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
@@ -75,6 +75,7 @@ const LoginPage = ({ checkAuthentication }) => {
         setBadNotification("Invalid username/email or password.");
       } else {
         setErrors([{ message: "An error occurred. Please try again." }]);
+        setBadNotification("An error occurred. Please try again.");
       }
       console.error(err);
     }

@@ -13,6 +13,8 @@ const DashboardPage = () => {
   const [baselineChartData, setBaselineChartData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTimeRange, setSelectedTimeRange] = useState("");
+  const [uploadForm, setUploadForm] = useState(false);
+  const [showUploadFormButton, setShowUploadFormButton] = useState(true);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -98,54 +100,56 @@ const DashboardPage = () => {
 
   const onClickTimeRange = async (timeRange) => {
     const url =
-      timeRange === "daily"
+      timeRange === "Daily"
         ? "http://localhost:5000/water/getdailydata"
-        : timeRange === "weekly"
+        : timeRange === "Weekly"
         ? "http://localhost:5000/water/getweeklydata"
         : "http://localhost:5000/water/getmonthlydata";
     fetchData(url);
     setSelectedTimeRange(timeRange);
   };
 
+  const onClickUploadForm = () => {
+    setUploadForm(!uploadForm);
+    setShowUploadFormButton(false);
+  };
+
   return (
     <div className={styles.body}>
       <div className={styles.container}>
-        <div className={styles.uploadFile}>
-          <h3>Upload File</h3>
-          <UploadFile />
-        </div>
+        <div className={styles.uploadFile}>{uploadForm && <UploadFile />}</div>
 
         {isLoading ? (
-          <h2> Rendering data, please wait...</h2>
-        ) : chartData.length === 0 ? (
-          <h2>No data to display, please upload file.</h2>
-        ) : (
-          <div className={styles.timeRange}>
-            <Card>
-              <h3>Choose a period average to display:</h3>
-              {selectedTimeRange && (
-                <h3>selected time range: {selectedTimeRange}</h3>
-              )}
+          <h2 className={styles.renderMessage}>
+            {" "}
+            Rendering data, please wait...
+          </h2>
+        ) : chartData.length !== 0 ? (
+          <div className={styles.data}>
+            <div className={styles.timeRange}>
+              <h2>
+                Period average:{" "}
+                <a className={styles.selectedtimeRange}>{selectedTimeRange}</a>
+              </h2>
               <button
                 className={styles.btn}
-                onClick={() => onClickTimeRange("daily")}
+                onClick={() => onClickTimeRange("Daily")}
               >
                 Daily
               </button>
               <button
                 className={styles.btn}
-                onClick={() => onClickTimeRange("weekly")}
+                onClick={() => onClickTimeRange("Weekly")}
               >
                 Weekly
               </button>
               <button
                 className={styles.btn}
-                onClick={() => onClickTimeRange("monthly")}
+                onClick={() => onClickTimeRange("Monthly")}
               >
                 Monthly
               </button>
-            </Card>
-
+            </div>
             <div className={styles.grid}>
               {chartData.map((chart) => (
                 <Card key={chart.chartId}>
@@ -167,6 +171,24 @@ const DashboardPage = () => {
                   />
                 </Card>
               ))}
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div>
+              <h2 className={styles.renderMessage}>
+                No data to display, please upload file.
+              </h2>
+            </div>
+            <div className={styles.uploadFormbtn}>
+              {showUploadFormButton && (
+                <button
+                  className={styles.btn}
+                  onClick={() => onClickUploadForm(uploadForm)}
+                >
+                  Upload File
+                </button>
+              )}
             </div>
           </div>
         )}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 import styles from "./UploadFile.module.css";
@@ -52,6 +52,10 @@ const UploadFile = () => {
   return (
     <div>
       <LoadingBar color={"black"} height={"4px"} ref={loadingBarRef} />
+      <h2>
+        Upload File:{" "}
+        <a className={styles.selectedFileName}>{selectedFileName}</a>
+      </h2>
       <div className={styles.buttons}>
         <Button className={styles.button} variant="contained" component="label">
           Select File
@@ -66,7 +70,6 @@ const UploadFile = () => {
           Upload
         </Button>
       </div>
-      <div className={styles.selectedFileName}>{selectedFileName}</div>
       {error && <div>{error}</div>}
     </div>
   );
