@@ -35,14 +35,19 @@ const UploadFile = () => {
           setUploadedData(response.data); // Set the uploaded data in state
           // Handle successful upload
           loadingBarRef.current.complete(); // Complete the loading bar
+
           window.location.reload();
-          setLoading(false);
         })
         .catch((error) => {
           console.error(error);
           setError("An error occurred during upload.");
           setLoading(false);
           loadingBarRef.current.complete(); // Complete the loading bar
+        })
+        .finally(() => {
+          setLoading(false);
+          setSelectedFile(null);
+          setSelectedFileName("");
         });
     } else {
       setError("Please select a file.");
@@ -52,12 +57,19 @@ const UploadFile = () => {
   return (
     <div>
       <LoadingBar color={"black"} height={"4px"} ref={loadingBarRef} />
-      <h2>
-        Upload File:{" "}
-        <a className={styles.selectedFileName}>{selectedFileName}</a>
-      </h2>
+      <div className="">
+        <h2>
+          Upload File:{" "}
+          <a className={styles.selectedFileName}>{selectedFileName}</a>
+        </h2>
+      </div>
       <div className={styles.buttons}>
-        <Button className={styles.button} variant="contained" component="label">
+        <Button
+          className={styles.button}
+          variant="contained"
+          component="label"
+          sx={{ backgroundColor: "#2d363c", color: "#fff" }}
+        >
           Select File
           <input type="file" hidden onChange={handleFileChange} />
         </Button>
@@ -66,8 +78,9 @@ const UploadFile = () => {
           className={styles.button}
           onClick={handleUpload}
           variant="contained"
+          sx={{ backgroundColor: "#2d363c", color: "#fff" }}
         >
-          Upload
+          Submit
         </Button>
       </div>
       {error && <div>{error}</div>}

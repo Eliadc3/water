@@ -231,9 +231,10 @@ const RegisterPage = ({
           </div>
         )}
 
-        <div className="admin">
+        <div>
           <label htmlFor="admin">
             <input
+              className={styles.admin}
               type="checkbox"
               id="admin"
               checked={admin}

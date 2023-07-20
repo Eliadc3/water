@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "../css/Dashboard_Page.module.css";
 import notifStyles from "../css/Notifications.module.css";
 
 import {
@@ -112,8 +113,12 @@ const BaselineData = () => {
 
   return (
     <div>
-      <h2>Baseline</h2>
-
+      <div className={styles.pageName}>
+        <h2>Baseline</h2>
+      </div>
+      <button className={styles.btn} onClick={handleDataSubmit}>
+        Save
+      </button>
       {notification && (
         <div className={notifStyles.notificationContainer}>
           <div className={notifStyles.notificationBox}>
@@ -270,7 +275,6 @@ const BaselineData = () => {
               </TableRow>
             </TableBody>
           </Table>
-          <button onClick={handleDataSubmit}>Save</button>
         </TableContainer>
       </div>
     </div>

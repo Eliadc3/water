@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import DropdownMenuStyles from "./DropdownMenu.module.css";
 import Logout from "../authentication/Logout";
+import { Link } from "react-router-dom";
 
 const DropdownMenu = ({ isAdmin, authenticated, closeMenu }) => {
   const LINKS = [
@@ -12,6 +12,7 @@ const DropdownMenu = ({ isAdmin, authenticated, closeMenu }) => {
           { label: "Baseline", path: "/baseline" },
         ]
       : []),
+    ...(authenticated ? [{ label: "Logout", component: <Logout /> }] : []),
   ];
 
   useEffect(() => {
@@ -32,28 +33,24 @@ const DropdownMenu = ({ isAdmin, authenticated, closeMenu }) => {
       });
     };
   }, [closeMenu]);
+
   return (
     <div>
       <div className={DropdownMenuStyles.dropdownMenu}>
         <ul>
           {LINKS.map((link, index) => (
             <li key={index}>
-              <Link
-                style={{
-                  color: "#F8F6F4",
-                }}
-                to={link.path}
-              >
-                {link.label}
-              </Link>
+              {link.component ? (
+                <span className={DropdownMenuStyles.logoutLink}>
+                  {link.component}
+                </span>
+              ) : (
+                <Link className={DropdownMenuStyles.link} to={link.path}>
+                  {link.label}
+                </Link>
+              )}
             </li>
           ))}
-
-          {authenticated && (
-            <li>
-              <Logout />
-            </li>
-          )}
         </ul>
       </div>
     </div>

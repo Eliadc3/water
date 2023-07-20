@@ -6,15 +6,21 @@ import DropdownMenu from "../components/dropdown/DropdownMenu";
 import Cookies from "js-cookie";
 
 const AppHeader = ({ isAdmin, authenticated }) => {
-  const firstName = Cookies.get("firstname");
+  const username = Cookies.get("username");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const dropdownButtonRef = useRef(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
   };
   const handleOutsideClick = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target) &&
+      dropdownButtonRef.current &&
+      !dropdownButtonRef.current.contains(event.target)
+    ) {
       setIsDropdownOpen(false);
     }
   };
@@ -40,14 +46,15 @@ const AppHeader = ({ isAdmin, authenticated }) => {
       <div className={styles.header}>
         <img className={styles.img} src={img} alt="" />
         <div className={styles.rightHeader}>
-          {firstName}
-          {firstName && (
-            <span
+          {username && (
+            <div
               className={styles.dropdownButton}
               onClick={handleDropdownButtonClick}
+              ref={dropdownButtonRef}
             >
               <i className="fa fa-bars" />
-            </span>
+              {username}
+            </div>
           )}
           <div ref={dropdownRef}>
             {isDropdownOpen && (

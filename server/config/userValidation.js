@@ -26,19 +26,39 @@ function validateRegistrationInput(
   if (username.length < 2) {
     errors.push({ message: "Username has to be at least 2 characters." });
   }
+  // Check if the username input is maximum 12 chars
+  if (username.length > 12) {
+    errors.push({ message: "Username has to be maximum 12 characters." });
+  }
+
   // Check if the first name is more than 2 chars
   if (firstname.length < 2) {
     errors.push({
-      message: "first name hase to be at least 2 characters.",
+      message: "First name hase to be at least 2 characters.",
+    });
+  }
+
+  // Check if the first name is maximum 12 chars
+  if (firstname.length > 12) {
+    errors.push({
+      message: "First name hase to be maximum 12 characters.",
     });
   }
 
   // Check if the last name is more than 2 chars
   if (lastname.length < 2) {
     errors.push({
-      message: "last name has to be at least 2 characters.",
+      message: "Last name has to be at least 2 characters.",
     });
   }
+
+  // Check if the last name is maximum 12 chars
+  if (lastname.length > 12) {
+    errors.push({
+      message: "Last name has to be maximum 12 characters.",
+    });
+  }
+
   /* Check whether password and password2 match or not */
   if (password != password2) {
     errors.push({ message: "Passwords do not match" });

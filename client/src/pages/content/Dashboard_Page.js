@@ -14,7 +14,6 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTimeRange, setSelectedTimeRange] = useState("");
   const [uploadForm, setUploadForm] = useState(false);
-  const [showUploadFormButton, setShowUploadFormButton] = useState(true);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -26,16 +25,6 @@ const DashboardPage = () => {
   useEffect(() => {
     fetchData("http://localhost:5000/water/getdailydata");
   }, []);
-  // useEffect(() => {
-  //   const cachedData = getCachedData();
-  //   if (cachedData) {
-  //     setChartData(cachedData.chartData);
-  //     setBaselineChartData(cachedData.baselineChartData);
-  //     setIsLoading(false);
-  //   } else {
-  //
-  //   }
-  // }, []);
 
   const fetchData = async (url) => {
     try {
@@ -78,25 +67,11 @@ const DashboardPage = () => {
 
       setBaselineChartData(baselineChartData);
       //---------------------------------------------------------------------//
-      // cachedData(chartData, baselineChartData);
     } catch (error) {
       setIsLoading(false);
       console.error("Error fetching data:", error);
     }
   };
-
-  // const cachedData = (chartData, baselineChartData) => {
-  //   const cachedData = {
-  //     chartData,
-  //     baselineChartData,
-  //   };
-  //   localStorage.setItem("dashboardData", JSON.stringify(cachedData));
-  // };
-
-  // const getCachedData = () => {
-  //   const cachedData = localStorage.getItem("dashboardData");
-  //   return cachedData ? JSON.parse(cachedData) : null;
-  // };
 
   const onClickTimeRange = async (timeRange) => {
     const url =
@@ -111,90 +86,90 @@ const DashboardPage = () => {
 
   const onClickUploadForm = () => {
     setUploadForm(!uploadForm);
-    setShowUploadFormButton(false);
   };
 
   return (
     <div className={styles.body}>
+      <div className={styles.pageName}>
+        <h2>Dashboard</h2>
+      </div>
       <div className={styles.container}>
+        <div className={styles.uploadFormbtn}>
+          <button className={styles.btn} onClick={onClickUploadForm}>
+            <i class="fa fa-arrow-up" aria-hidden="true" /> Upload File
+          </button>
+        </div>
         <div className={styles.uploadFile}>{uploadForm && <UploadFile />}</div>
-
         {isLoading ? (
           <h2 className={styles.renderMessage}>
-            {" "}
             Rendering data, please wait...
           </h2>
-        ) : chartData.length !== 0 ? (
-          <div className={styles.data}>
-            <div className={styles.timeRange}>
-              <h2>
-                Period average:{" "}
-                <a className={styles.selectedtimeRange}>{selectedTimeRange}</a>
-              </h2>
-              <button
-                className={styles.btn}
-                onClick={() => onClickTimeRange("Daily")}
-              >
-                Daily
-              </button>
-              <button
-                className={styles.btn}
-                onClick={() => onClickTimeRange("Weekly")}
-              >
-                Weekly
-              </button>
-              <button
-                className={styles.btn}
-                onClick={() => onClickTimeRange("Monthly")}
-              >
-                Monthly
-              </button>
-            </div>
-            <div className={styles.grid}>
-              {chartData.map((chart) => (
-                <Card key={chart.chartId}>
-                  <LineChart
-                    key={chart.chartId}
-                    chartId={chart.chartId}
-                    series={chart.series}
-                    baselineSeries={
-                      baselineChartData.find(
-                        (data) => data.chartId === chart.chartId
-                      )
-                        ? baselineChartData.find(
-                            (data) => data.chartId === chart.chartId
-                          ).baselineSeries
-                        : []
-                    }
-                    title={chart.title}
-                    xCategories={chart.xCategories}
-                  />
-                </Card>
-              ))}
-            </div>
-          </div>
         ) : (
           <div>
-            <div>
-              <h2 className={styles.renderMessage}>
-                No data to display, please upload file.
-              </h2>
-            </div>
-            <div className={styles.uploadFormbtn}>
-              {showUploadFormButton && (
-                <button
-                  className={styles.btn}
-                  onClick={() => onClickUploadForm(uploadForm)}
-                >
-                  Upload File
-                </button>
-              )}
-            </div>
+            {chartData.length !== 0 ? (
+              <div className={styles.data}>
+                <div className={styles.timeRange}>
+                  <h2>
+                    Period Average:{" "}
+                    <a className={styles.selectedtimeRange}>
+                      {selectedTimeRange}
+                    </a>
+                  </h2>
+                  <div className={styles.timeRangeButtons}>
+                    <button
+                      className={styles.btn}
+                      onClick={() => onClickTimeRange("Daily")}
+                    >
+                      Daily
+                    </button>
+                    <button
+                      className={styles.btn}
+                      onClick={() => onClickTimeRange("Weekly")}
+                    >
+                      Weekly
+                    </button>
+                    <button
+                      className={styles.btn}
+                      onClick={() => onClickTimeRange("Monthly")}
+                    >
+                      Monthly
+                    </button>
+                  </div>
+                </div>
+                <div className={styles.grid}>
+                  {chartData.map((chart) => (
+                    <Card key={chart.chartId}>
+                      <LineChart
+                        key={chart.chartId}
+                        chartId={chart.chartId}
+                        series={chart.series}
+                        baselineSeries={
+                          baselineChartData.find(
+                            (data) => data.chartId === chart.chartId
+                          )
+                            ? baselineChartData.find(
+                                (data) => data.chartId === chart.chartId
+                              ).baselineSeries
+                            : []
+                        }
+                        title={chart.title}
+                        xCategories={chart.xCategories}
+                      />
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div>
+                <h2 className={styles.renderMessage}>
+                  No data to display, please upload file.
+                </h2>
+              </div>
+            )}
           </div>
         )}
       </div>
     </div>
   );
 };
-
 export default DashboardPage;

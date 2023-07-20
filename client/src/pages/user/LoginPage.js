@@ -60,7 +60,7 @@ const LoginPage = ({ checkAuthentication }) => {
         Cookies.set("admin", res.data.admin, {
           expires: hours / 24,
         });
-        Cookies.set("firstname", res.data.firstname, {
+        Cookies.set("username", res.data.username, {
           expires: hours / 24,
         });
 

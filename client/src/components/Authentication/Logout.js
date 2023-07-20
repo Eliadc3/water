@@ -12,8 +12,8 @@ const Logout = () => {
     // Remove role(admin) from Cookies
     Cookies.remove("admin");
 
-    // Remove first name from localStorage
-    Cookies.remove("firstname");
+    // Remove username from localStorage
+    Cookies.remove("username");
 
     // Redirect the user to the login page
     window.location.href = "/login";

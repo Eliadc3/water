@@ -81,8 +81,8 @@ exports.login = (req, res, next) => {
     );
 
     const admin = user.admin;
-    const firstname = user.firstname;
-    res.status(201).json({ token, admin, firstname });
+    const username = user.username;
+    res.status(201).json({ token, admin, username });
   })(req, res, next);
 };
 

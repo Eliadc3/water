@@ -2,10 +2,15 @@
   margin-top: 10px;
   font-weight: bold;
 }
-.button {
- margin: left 8px;;
+
+h2 {
+  font-weight: lighter;
 }
 
-a{
-  font-size:medium;
+.buttons {
+  margin-top: 23px;
+}
+
+a {
+  font-size: large;
 }
