@@ -1,10 +1,16 @@
 import React, { useState } from "react";
+import axios from "axios";
 import styles from "../css/UserForm.module.css";
-import "@inovua/reactdatagrid-community/index.css";
 import notifStyles from "../css/Notifications.module.css";
+import "@inovua/reactdatagrid-community/index.css";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
-const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
+const ChangePasswordForm = ({
+  user,
+  onCancel,
+  onChangePassword,
+  setNotification,
+}) => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -12,6 +18,7 @@ const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // const [notification, setNotification] = useState(null);
   const [badNotification, setBadNotification] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -23,23 +30,28 @@ const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
     }
 
     try {
-      // Perform the password change logic
-      await onChangePassword(user, oldPassword, newPassword);
-      // Reset from fields
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      const response = await axios.post(
+        `http://localhost:5000/users/change-password/${user._id}`,
+        {
+          oldPassword,
+          newPassword,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
       setErrors([]);
+      setNotification("Password changed successfully.");
+      handleCloseForm();
     } catch (error) {
-      console.error("Error occurred: ", error);
-      setErrors([
-        { message: "An error occurred while changing the password." },
-      ]);
-      setBadNotification("An error occurred. Please try again.");
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrors(error.response.data.errors);
+      } else {
+        console.error("Error changing password: ", error);
+      }
     }
   };
-  console.log("type: ", oldPassword);
-  console.log("old: ", user.password);
 
   const handleCloseForm = () => {
     onCancel();
@@ -57,19 +69,6 @@ const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
   };
   return (
     <div>
-      {badNotification && (
-        <div className={notifStyles.notificationContainer}>
-          <div className={notifStyles.notificationBox}>
-            <div
-              className={`${notifStyles.badnotification} ${
-                badNotification.fadeOut ? notifStyles.fadeOut : ""
-              }`}
-            >
-              {badNotification}
-            </div>
-          </div>
-        </div>
-      )}
       <div className={styles.loginForm}>
         <div className={styles.formName}>Change Password</div>
         <form className="form-body" onSubmit={handleSubmit}>
@@ -89,7 +88,7 @@ const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
             <div className="oldPassword">
               <input
                 type={showOldPassword ? "text" : "password"}
-                title="oldPassword"
+                title="Old Password"
                 id="oldPassword"
                 placeholder="Old Password"
                 value={oldPassword}
@@ -109,12 +108,12 @@ const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
             <div className="newPassword">
               <input
                 type={showNewPassword ? "text" : "password"}
-                title="newPassword"
+                title="New Password"
                 id="newPassword"
                 placeholder="New Password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                required
+                // required
               />
               <button
                 type="button"
@@ -129,7 +128,7 @@ const ChangePasswordForm = ({ user, onCancel, onChangePassword }) => {
             <div className="confirmPassword">
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                title="confirmPassword"
+                title="Confirm Password"
                 id="confirmPassword"
                 placeholder="Confirm Password"
                 value={confirmPassword}

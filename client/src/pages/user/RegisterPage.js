@@ -77,7 +77,6 @@ const RegisterPage = ({
             lastname,
             email,
             admin,
-            password,
           },
           {
             headers: { "Content-Type": "application/json" },
@@ -112,7 +111,7 @@ const RegisterPage = ({
       if (err.response && err.response.data && err.response.data.errors) {
         setErrors(err.response.data.errors);
       } else {
-        alert("An error occurred. Please try again.");
+        setNotification(err.response.data.message);
       }
 
       console.error(err);
@@ -151,41 +150,45 @@ const RegisterPage = ({
         <div className="username">
           <input
             type="text"
-            title="username"
+            title="Username"
             id="username"
             placeholder="Username"
             value={username}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="email">
           <input
             type="text"
-            title="email"
+            title="Email"
             id="email"
             placeholder="Email"
             value={email}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="firstname">
           <input
             type="text"
-            title="firstname"
+            title="First name"
             id="firstname"
             placeholder="First name"
             value={firstname}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="lastname">
           <input
             type="text"
-            title="lastname"
+            title="Last name"
             id="lastname"
             placeholder="Last name"
             value={lastname}
             onChange={handleInputChange}
+            required
           />
         </div>
         {!selectedUser && (
@@ -193,11 +196,12 @@ const RegisterPage = ({
             <div className="password">
               <input
                 type={showPassword ? "text" : "password"}
-                title="password"
+                title="Password"
                 id="password"
                 placeholder="Enter Password"
                 value={password}
                 onChange={handleInputChange}
+                required
               />
               <button
                 type="button"
@@ -214,11 +218,12 @@ const RegisterPage = ({
             <div className="password2">
               <input
                 type={showPassword2 ? "text" : "password"}
-                title="password2"
+                title="Confirm Password"
                 id="password2"
-                placeholder="Enter Password Again"
+                placeholder="Confirm Password"
                 value={password2}
                 onChange={handleInputChange}
+                required
               />
               <button
                 type="button"

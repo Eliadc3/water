@@ -140,11 +140,15 @@ const Users = () => {
         }
       );
       setShowChangePasswordForm(false);
-      setNotification("Password changed successfully.");
+      // setNotification("Password changed successfully.");
       setSelectedUser(null);
     } catch (error) {
-      console.error("Error changing password: ", error);
-      setNotification("Error changing password.");
+      if (error.response && error.response.data && error.response.data.errors) {
+        // setNotification(error.response.data.message);
+      } else {
+        console.error("Error changing password: ", error);
+        // setNotification("Error changing password.");
+      }
     }
   };
 

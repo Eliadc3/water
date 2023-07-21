@@ -7,7 +7,7 @@ const DeleteConfirmationForm = ({ user, onCancel, onConfirm }) => {
       <div className={styles.formName}>Delete User</div>
       <div className={styles.deleteFormBody}>
         <div className={styles.deleteFormText}>
-          Are you sure you want to delete the user {user.username}?
+          Are you sure you want to delete the user: {user.username}?
         </div>
         <div className={styles.buttons}></div>
         <button className={styles.btn} onClick={() => onConfirm(true)}>

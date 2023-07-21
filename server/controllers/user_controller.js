@@ -3,7 +3,11 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User_model");
 require("dotenv").config();
 const validator = require("email-validator");
-const { validateRegistrationInput } = require("../config/userValidation");
+const {
+  validateRegistrationInput,
+  validateUpdateForm,
+  validateChangePassword,
+} = require("../config/userValidation");
 const passport = require("passport");
 
 const SESSION_SECRET = process.env.SESSION_SECRET;
@@ -117,10 +121,14 @@ exports.updateUser = async (req, res) => {
   const { userId } = req.params;
   const { username, firstname, lastname, email, admin } = req.body;
   try {
+    const errors = validateUpdateForm(username, firstname, lastname, email);
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
     const user = await User.findByIdAndUpdate(
       userId,
-      { username, firstname, lastname, email, admin }
-      // { new: true }
+      { username, firstname, lastname, email, admin },
+      { new: true } // Set { new: true } to return the updated user
     );
 
     if (user) {
@@ -141,12 +149,19 @@ exports.changePassword = async (req, res) => {
 
   try {
     const user = await User.findById(userId);
+    const errors = validateChangePassword(oldPassword, newPassword);
+
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      errors.push({ message: "User not found." });
+      // return res.status(404).json({ message: "User not found." });
     }
     const passwordMatch = await bcrypt.compare(oldPassword, user.password);
     if (!passwordMatch) {
-      return res.status(400).json({ message: "Invalid old password" });
+      errors.push({ message: "Invalid old password." });
+      // return res.status(400).json({ message: "Invalid old password." });
+    }
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
     }
     const saltRounds = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
