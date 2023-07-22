@@ -184,6 +184,20 @@ const Users = () => {
       },
     },
     {
+      name: "updatedAt",
+      header: "Updated At",
+      defaultFlex: 0.6,
+      render: ({ value }) => {
+        const date = new Date(value);
+        const formattedDate = `${date.getDate()}/${date.getMonth() +
+          1}/${date.getFullYear()}`;
+        const formattedTime = `${date.getHours()}:${String(
+          date.getMinutes()
+        ).padStart(2, "0")}`;
+        return `${formattedDate} ${formattedTime}`;
+      },
+    },
+    {
       name: "actions",
       header: "Actions",
       defaultFlex: 1.3,

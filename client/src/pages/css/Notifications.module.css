@@ -1,13 +1,15 @@
 .container {
     margin: 1em auto;
-        width: 100%;
+    width: 100%;
 }
+
 .notificationContainer {
     position: fixed;
     top: 20px;
-    right: 45%;
+    left: 50%;
     z-index: 9999;
     justify-content: center;
+    transform: translate(-50%, -50%);
 }
 
 .notificationBox {

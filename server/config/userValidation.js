@@ -4,6 +4,11 @@ function containsNumbers(input) {
   return /\d/.test(input);
 }
 
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 function validateRegistrationInput(
   username,
   firstname,
@@ -13,7 +18,8 @@ function validateRegistrationInput(
   password2
 ) {
   let errors = [];
-
+  username = username.trim();
+  email = email.trim();
   // Check if there is input
   if (
     !username ||
@@ -25,7 +31,10 @@ function validateRegistrationInput(
   ) {
     errors.push({ message: "You must fill all the fields." });
   }
-
+  // Validate username dosen't have spaces
+  if (/\s/.test(username)) {
+    errors.push({ message: "Username cannot contain spaces." });
+  }
   // Check if the username input is more than 2 chars
   if (username.length < 2) {
     errors.push({ message: "Username has to be at least 2 characters." });
@@ -84,8 +93,12 @@ function validateRegistrationInput(
   }
 
   // Check if the email is valid
-  if (!validator.validate(email)) {
+  if (!isValidEmail(email)) {
     errors.push({ message: "Invalid email address." });
+  }
+  // Validate username dosen't have spaces
+  else if (/\s/.test(email)) {
+    errors.push({ message: "Email cannot contain spaces." });
   }
 
   return errors;
@@ -93,6 +106,24 @@ function validateRegistrationInput(
 
 const validateUpdateForm = (username, firstname, lastname, email) => {
   const errors = [];
+
+  // Trim spaces at the beginning and end of the input fields
+  username = username.trim();
+  email = email.trim();
+
+  // Validate username
+  if (/\s/.test(username)) {
+    errors.push({ message: "Username cannot contain spaces." });
+  }
+
+  // Check if the email is valid
+  if (!isValidEmail(email)) {
+    errors.push({ message: "Invalid email address." });
+  }
+  // Validate username dosen't have spaces
+  else if (/\s/.test(email)) {
+    errors.push({ message: "Email cannot contain spaces." });
+  }
 
   // Check if there is input
   if (!username || !email || !firstname || !lastname) {
@@ -136,11 +167,6 @@ const validateUpdateForm = (username, firstname, lastname, email) => {
   // Check if the last name is maximum 12 chars
   if (lastname.length > 12) {
     errors.push({ message: "Last name has to be maximum 12 characters." });
-  }
-
-  // Check if the email is valid
-  if (!validator.validate(email)) {
-    errors.push({ message: "Invalid email address." });
   }
 
   return errors;

@@ -29,9 +29,7 @@ exports.register = async (req, res) => {
       password,
       password2
     );
-    if (errors.length > 0) {
-      return res.status(400).json({ errors });
-    }
+
     const lowerCaseUsername = username.toLowerCase();
     const lowerCaseEmail = email.toLowerCase();
 
@@ -39,16 +37,16 @@ exports.register = async (req, res) => {
       $or: [{ username: lowerCaseUsername }, { email: lowerCaseEmail }],
     });
     if (checkUser) {
-      const errors = [];
       if (checkUser.username === lowerCaseUsername) {
         errors.push({ message: "Username already exists." });
       }
       if (checkUser.email === lowerCaseEmail) {
         errors.push({ message: "Email already exists." });
       }
+    }
+    if (errors.length > 0) {
       return res.status(400).json({ errors });
     }
-
     // Save the user details to the database
     await User.create({
       username: lowerCaseUsername,
@@ -120,22 +118,44 @@ exports.deleteUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const { userId } = req.params;
   const { username, firstname, lastname, email, admin } = req.body;
+  const lowerCaseUsername = username.toLowerCase();
+  const lowerCaseEmail = email.toLowerCase();
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found." });
+  }
+
   try {
     const errors = validateUpdateForm(username, firstname, lastname, email);
-    if (errors.length > 0) {
+
+    // Check if the username or email is already taken by another user
+    const checkUser = await User.findOne({
+      $or: [{ username: lowerCaseUsername }, { email: lowerCaseEmail }],
+      _id: { $ne: userId }, // Exclude the user's own record using _id: { $ne: userId }
+    });
+
+    if (checkUser) {
+      const errors = [];
+      if (checkUser.username === lowerCaseUsername) {
+        errors.push({ message: "Username already exists." });
+      }
+      if (checkUser.email === lowerCaseEmail) {
+        errors.push({ message: "Email already exists." });
+      }
       return res.status(400).json({ errors });
     }
+
     const user = await User.findByIdAndUpdate(
       userId,
       { username, firstname, lastname, email, admin },
       { new: true } // Set { new: true } to return the updated user
     );
 
-    if (user) {
-      res.status(201).json({ message: "User updated successfully.", user });
-    } else {
-      res.status(404).json({ message: "User not found." });
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
     }
+    res.status(201).json({ message: "User updated successfully.", user });
   } catch (error) {
     res
       .status(500)
