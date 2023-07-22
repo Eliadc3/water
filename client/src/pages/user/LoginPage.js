@@ -32,7 +32,7 @@ const LoginPage = ({ checkAuthentication }) => {
     if (badNotification) {
       const timer = setTimeout(() => {
         setBadNotification(null);
-      }, 500000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [badNotification]);
