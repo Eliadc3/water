@@ -9,7 +9,7 @@ const baselineManipulationsController = require("../controllers/baseline_manipul
 const manipulationsController = require("../controllers/manipulations_controller.js");
 
 require("dotenv").config();
-const URI = process.env.URI;
+const DB = process.env.DB;
 
 const multer = require("multer");
 const uploadPre = multer({ dest: "uploads/pre_manipulated/" });

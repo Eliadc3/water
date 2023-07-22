@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const userController = require("../controllers/user_controller");
+const passwordResetController = require("../controllers/passwordResetController");
 
 // User registration route
 router.post("/register", userController.register);
@@ -27,5 +28,17 @@ router.post("/update/:userId", userController.updateUser);
 
 // Change password
 router.post("/change-password/:userId", userController.changePassword);
+
+// Request password reset
+router.post(
+  "/request-password-reset",
+  passwordResetController.requestPasswordReset
+);
+
+// Reset password
+router.post(
+  "/reset-password/:userId/:token",
+  passwordResetController.resetPassword
+);
 
 module.exports = router;

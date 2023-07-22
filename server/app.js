@@ -6,7 +6,7 @@ const passport = require("passport");
 const user_router = require("./routes/user_router");
 const water_router = require("./routes/water_router");
 require("dotenv").config();
-const URI = process.env.URI;
+const DB = process.env.DB;
 
 const app = express();
 app.use(bodyParser.json());
@@ -18,7 +18,7 @@ app.use(
 );
 
 mongoose
-  .connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(DB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log("Error connecting to MongoDB: " + err.message));
 
