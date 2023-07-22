@@ -140,15 +140,9 @@ const Users = () => {
         }
       );
       setShowChangePasswordForm(false);
-      // setNotification("Password changed successfully.");
       setSelectedUser(null);
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors) {
-        // setNotification(error.response.data.message);
-      } else {
-        console.error("Error changing password: ", error);
-        // setNotification("Error changing password.");
-      }
+      console.error("Error changing password: ", error);
     }
   };
 
@@ -200,7 +194,7 @@ const Users = () => {
     {
       name: "actions",
       header: "Actions",
-      defaultFlex: 1.3,
+      defaultFlex: 1.52,
       render: ({ data }) => (
         <div>
           <button

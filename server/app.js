@@ -20,7 +20,9 @@ app.use(
 mongoose
   .connect(DB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.log("Error connecting to MongoDB: " + err.message));
+  .catch((error) =>
+    console.log("Error connecting to MongoDB: " + error.message)
+  );
 
 // Passport configuration
 require("./config/passport")(passport);

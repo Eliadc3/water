@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styles from "../css/UserForm.module.css";
-import notifStyles from "../css/Notifications.module.css";
 import "@inovua/reactdatagrid-community/index.css";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
@@ -15,14 +14,13 @@ const ChangePasswordForm = ({
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState([]);
+
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  // const [notification, setNotification] = useState(null);
-  const [badNotification, setBadNotification] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     if (newPassword !== confirmPassword) {
       setErrors([{ message: "Password do not match" }]);
@@ -92,7 +90,7 @@ const ChangePasswordForm = ({
                 id="oldPassword"
                 placeholder="Old Password"
                 value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)}
+                onChange={(event) => setOldPassword(event.target.value)}
                 required
               />
               <button
@@ -112,8 +110,8 @@ const ChangePasswordForm = ({
                 id="newPassword"
                 placeholder="New Password"
                 value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                // required
+                onChange={(event) => setNewPassword(event.target.value)}
+                required
               />
               <button
                 type="button"
@@ -132,7 +130,7 @@ const ChangePasswordForm = ({
                 id="confirmPassword"
                 placeholder="Confirm Password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(event) => setConfirmPassword(event.target.value)}
                 required
               />
               <button

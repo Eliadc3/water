@@ -20,8 +20,8 @@ router.get("/baseline", async (req, res) => {
   try {
     const data = await OutputBaselineWaterModel.find({});
     res.json(data);
-  } catch (err) {
-    console.error("Error retrieving data from database:", err);
+  } catch (error) {
+    console.error("Error retrieving data from database:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -44,8 +44,8 @@ router.get("/getdailydata", async (req, res) => {
   try {
     const data = await DailyWaterModel.find({});
     res.json(data);
-  } catch (err) {
-    console.error("Error retrieving data from database:", err);
+  } catch (error) {
+    console.error("Error retrieving data from database:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -54,8 +54,8 @@ router.get("/getweeklydata", async (req, res) => {
   try {
     const data = await WeeklyWaterModel.find({});
     res.json(data);
-  } catch (err) {
-    console.error("Error retrieving data from database:", err);
+  } catch (error) {
+    console.error("Error retrieving data from database:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -63,8 +63,8 @@ router.get("/getmonthlydata", async (req, res) => {
   try {
     const data = await MonthlyWaterModel.find({});
     res.json(data);
-  } catch (err) {
-    console.error("Error retrieving data from database:", err);
+  } catch (error) {
+    console.error("Error retrieving data from database:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

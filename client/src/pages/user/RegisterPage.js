@@ -107,14 +107,14 @@ const RegisterPage = ({
         setNotification("User updated successfully.");
         onSuccess(); // Call the onSuccess prop to trigger data refresh in the parent component
       }
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.errors) {
-        setErrors(err.response.data.errors);
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrors(error.response.data.errors);
       } else {
-        setNotification(err.response.data.message);
+        setNotification(error.response.data.message);
       }
 
-      console.error(err);
+      console.error(error);
     }
   };
 

@@ -12,9 +12,8 @@ function generateToken(length = 32) {
 async function sendPasswordResetEmail(user, token) {
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false,
+      service: "gmail",
+
       auth: {
         user: process.env.USER,
         pass: process.env.PASS,
@@ -44,11 +43,14 @@ exports.requestPasswordReset = async (req, res) => {
     const { email } = req.body;
 
     const user = await User.findOne({ email: email.toLowerCase() });
+    const errors = [];
 
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      errors.push({ message: "User not found." });
     }
-
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
     // Generate a random reset token and save it to the user's document in the database
     const resetToken = generateToken();
     user.passwordResetToken = resetToken;
@@ -75,15 +77,23 @@ exports.resetPassword = async (req, res) => {
     const { newPassword } = req.body;
 
     const user = await User.findById(userId);
+    const errors = [];
 
     if (
       !user ||
       user.passwordResetToken !== token ||
       user.passwordResetExpires < Date.now()
     ) {
-      return res.status(400).json({ message: "Invalid or expired token." });
+      errors.push({ message: "Invalid or expired token." });
+    }
+    // Check if password matches conditions
+    if (newPassword.length < 8) {
+      errors.push({ message: "Password must be at least 8 characters." });
     }
 
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
     // Reset the user's password
     const saltRounds = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
@@ -95,7 +105,6 @@ exports.resetPassword = async (req, res) => {
 
     res.status(200).json({ message: "Password reset successful." });
   } catch (error) {
-    console.error("Error resetting password:", error);
     res
       .status(500)
       .json({ error: "An error occurred while resetting password." });

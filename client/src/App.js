@@ -10,6 +10,7 @@ import DashboardPage from "./pages/content/Dashboard_Page";
 import UsersPage from "./pages/user/UsersPage";
 import BaselineDataPage from "./pages/content/baselineDataPage";
 import AppHeader from "./layouts/AppHeader";
+import PasswordResetPage from "./pages/user/PasswordResetPage";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -89,6 +90,10 @@ function App() {
             element={
               <DashboardPage authenticated={authenticated} isAdmin={isAdmin} />
             }
+          />
+          <Route
+            path="/reset-password/:userId/:token"
+            element={<PasswordResetPage />}
           />
         </Routes>
       </MainLayout>

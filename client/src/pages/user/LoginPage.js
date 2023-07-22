@@ -7,10 +7,13 @@ import notifStyles from "../css/Notifications.module.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 
+import PasswordResetForm from "./PasswordResetForm";
+
 const LoginPage = ({ checkAuthentication }) => {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordResetForm, setShowPasswordResetForm] = useState(false);
 
   const [badNotification, setBadNotification] = useState(null);
   const [errors, setErrors] = useState([]);
@@ -69,19 +72,22 @@ const LoginPage = ({ checkAuthentication }) => {
         // redirect to uploadfile page
         navigate("/dashboard");
       }
-    } catch (err) {
-      if (err.response && err.response.status) {
+    } catch (error) {
+      if (error.response && error.response.status) {
         setErrors([{ message: "Invalid username/email or password." }]);
         setBadNotification("Invalid username/email or password.");
       } else {
         setErrors([{ message: "An error occurred. Please try again." }]);
         setBadNotification("An error occurred. Please try again.");
       }
-      console.error(err);
+      console.error(error);
     }
   };
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+  const toggleShowPasswordResetForm = () => {
+    setShowPasswordResetForm(!showPasswordResetForm);
   };
 
   return (
@@ -100,55 +106,65 @@ const LoginPage = ({ checkAuthentication }) => {
         </div>
       )}
       <div>
-        <div
-          className={styles.loginForm}
-          style={{
-            color: "white",
-          }}
-        >
-          <div className={styles.formName}>Login</div>
-          <form className="form-body" onSubmit={handleSubmit}>
-            {errors.length > 0 && (
-              <div className={styles.errorContainerLogin}>
-                <div className={styles.errorTitle}></div>
-                <ul className={styles.no_bullets}>
-                  {errors.map((error, index) => (
-                    <li key={index}>{error.message}</li>
-                  ))}
-                </ul>
+        {showPasswordResetForm ? (
+          <PasswordResetForm />
+        ) : (
+          <div
+            className={styles.loginForm}
+            style={{
+              color: "white",
+            }}
+          >
+            <div className={styles.formName}>Login</div>
+            <form className="form-body" onSubmit={handleSubmit}>
+              {errors.length > 0 && (
+                <div className={styles.errorContainerLogin}>
+                  <div className={styles.errorTitle}></div>
+                  <ul className={styles.no_bullets}>
+                    {errors.map((error, index) => (
+                      <li key={index}>{error.message}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div className="usernameOrEmail">
+                <input
+                  type="text"
+                  id="usernameOrEmail"
+                  placeholder="Username or Email"
+                  value={usernameOrEmail}
+                  onChange={handleInputChange}
+                />
               </div>
-            )}
-            <div className="usernameOrEmail">
-              <input
-                type="text"
-                id="usernameOrEmail"
-                placeholder="Username or Email"
-                value={usernameOrEmail}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className={styles.passwordContainer}>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                placeholder="Enter Password"
-                value={password}
-                onChange={handleInputChange}
-              />
+              <div className={styles.passwordContainer}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  placeholder="Enter Password"
+                  value={password}
+                  onChange={handleInputChange}
+                />
+                <button
+                  type="button"
+                  className={styles.showPasswordButton}
+                  onClick={toggleShowPassword}
+                >
+                  {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+                </button>
+              </div>
+              <button type="submit" className={styles.btn}>
+                submit
+              </button>
               <button
                 type="button"
-                className={styles.showPasswordButton}
-                onClick={toggleShowPassword}
+                className={styles.btn}
+                onClick={toggleShowPasswordResetForm}
               >
-                {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+                Forgot Password
               </button>
-            </div>
-            <button type="submit" className={styles.btn}>
-              submit
-            </button>
-            <div></div>
-          </form>
-        </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
