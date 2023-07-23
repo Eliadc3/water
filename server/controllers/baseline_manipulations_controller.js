@@ -1,8 +1,13 @@
 const BaselineWaterModel = require("../models/Water_OutputBaseline_model");
 const InputBaselineWaterModel = require("../models/Water_InputBaseline_model");
+
+// Function to get input baseline data from the database
 exports.getInputBaselineData = async (req, res) => {
   try {
+    // Fetch all input baseline data from the database
     const inputBaselineData = await InputBaselineWaterModel.find();
+
+    // Send the data as a JSON response
     return res.status(200).json(inputBaselineData);
   } catch (error) {
     console.error(error);
@@ -10,6 +15,7 @@ exports.getInputBaselineData = async (req, res) => {
   }
 };
 
+// Function for baseline data manipulations and saving to the database
 exports.baseline_manipulations = async (req, res) => {
   try {
     // Wrap req.body in an array if it's not already an array
@@ -21,7 +27,7 @@ exports.baseline_manipulations = async (req, res) => {
     // Save the new baseline data to the database
     await InputBaselineWaterModel.insertMany(inputBaselineData);
 
-    // filter the data to see if this is number or the record was accurate
+    // Perform data manipulations and calculations on the input data
     const manipulatedBaselineData = inputBaselineData
       // parse all the data to number for the manipulations
       .map((jsonObj) => ({
@@ -37,28 +43,6 @@ exports.baseline_manipulations = async (req, res) => {
         TIT_01: parseFloat(jsonObj.TIT_01),
         CIT_02: parseFloat(jsonObj.CIT_02),
       }));
-
-    // let Stage1_concentrate_flow_m3h,
-    //   Stage2_concentrate_factor,
-    //   Stage1_feed_TDS_mgl,
-    //   TCF,
-    //   Permeate_TDS_mgl,
-    //   Stage1_pressure_drop_bar,
-    //   Stage1_average_flow_m3h,
-    //   Stage2_pressure_drop_bar,
-    //   Stage2_average_flow_m3h,
-    //   Stage1_concentrate_factor,
-    //   Salt_rejection,
-    //   Stage1_normalized_pressure_drop_bar,
-    //   Stage2_normalized_pressure_drop_bar,
-    //   Stage1_concentrate_TDS_mgl,
-    //   Stage2_concentrate_TDS_mgl,
-    //   Salt_passage,
-    //   Stage1_aNDP,
-    //   Stage2_aNDP,
-    //   Normalized_salt_rejection,
-    //   Stage1_baseline_net_permeate_flow,
-    //   Stage2_baseline_net_permeate_flow;
 
     // first iteration loop
     const firstIterationLoop = manipulatedBaselineData.map((curr, index) => {
@@ -273,12 +257,13 @@ exports.baseline_manipulations = async (req, res) => {
       };
     });
 
-    // Delete existing baseline data for replace the old data
+    // Delete existing output baseline data to replace it with the new data
     await BaselineWaterModel.deleteMany();
+
+    // Save the final manipulatedBaselineData to the database as output baseline data
     const results = await BaselineWaterModel.insertMany(sixthIterationLoop);
 
-    // Save all the data from the csv file in object by the schema
-    // const results = await WaterModel.insertMany(sixthIterationLoop);
+    // Send a JSON response with a success message and the saved data
     return res.status(201).json({
       message: "Baseline data successfully saved.",
       results,

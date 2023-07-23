@@ -7,19 +7,31 @@ import notifStyles from "../css/Notifications.module.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import PasswordResetForm from "./PasswordResetForm";
+import PasswordResetRequest from "./PasswordResetRequest";
+
+// The LoginPage code is a component for a login page that handles user authentication and displays
+// a form for users to enter their username/email and password.
 
 const LoginPage = ({ checkAuthentication }) => {
+  // State to manage user inputs
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // State for showing/hiding password
   const [showPassword, setShowPassword] = useState(false);
+
+  // State for showing/hiding password reset form
   const [showPasswordResetForm, setShowPasswordResetForm] = useState(false);
 
+  // State for displaying bad notifications (error messages)
   const [badNotification, setBadNotification] = useState(null);
+
+  // State to store login errors
   const [errors, setErrors] = useState([]);
 
   const navigate = useNavigate();
 
+  // Function to handle input changes
   const handleInputChange = (event) => {
     const { id, value } = event.target;
 
@@ -31,6 +43,7 @@ const LoginPage = ({ checkAuthentication }) => {
     }
   };
 
+  // UseEffect to handle the fadeout of bad notifications after 5 seconds
   useEffect(() => {
     if (badNotification) {
       const timer = setTimeout(() => {
@@ -40,6 +53,7 @@ const LoginPage = ({ checkAuthentication }) => {
     }
   }, [badNotification]);
 
+  // Function to handle form submission (login)
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -50,13 +64,15 @@ const LoginPage = ({ checkAuthentication }) => {
           password,
         },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           withCredentials: true,
         }
       );
       if (res.status === 201) {
         const hours = 1; // Set the expiration time for the cookie
-        // Save token as a cookie
+        // Save user details as cookies for authentication
         Cookies.set("token", res.data.token, {
           expires: hours / 24,
         });
@@ -67,31 +83,43 @@ const LoginPage = ({ checkAuthentication }) => {
           expires: hours / 24,
         });
 
+        // Check authentication status and redirect to the dashboard page
         checkAuthentication();
-
-        // redirect to uploadfile page
         navigate("/dashboard");
       }
     } catch (error) {
       if (error.response && error.response.status) {
-        setErrors([{ message: "Invalid username/email or password." }]);
+        setErrors([
+          {
+            message: "Invalid username/email or password.",
+          },
+        ]);
         setBadNotification("Invalid username/email or password.");
       } else {
-        setErrors([{ message: "An error occurred. Please try again." }]);
+        setErrors([
+          {
+            message: "An error occurred. Please try again.",
+          },
+        ]);
         setBadNotification("An error occurred. Please try again.");
       }
       console.error(error);
     }
   };
+
+  // Function to toggle showing/hiding the password
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+  // Function to toggle showing/hiding the password reset form
   const toggleShowPasswordResetForm = () => {
     setShowPasswordResetForm(!showPasswordResetForm);
   };
 
   return (
     <div>
+      {/* Display bad notifications (error messages) */}
       {badNotification && (
         <div className={notifStyles.notificationContainer}>
           <div className={notifStyles.notificationBox}>
@@ -106,9 +134,11 @@ const LoginPage = ({ checkAuthentication }) => {
         </div>
       )}
       <div>
+        {/* If the password reset form is shown, display the PasswordResetRequest component*/}
         {showPasswordResetForm ? (
-          <PasswordResetForm />
+          <PasswordResetRequest />
         ) : (
+          // If the password reset form is not shown, display the login form
           <div
             className={styles.loginForm}
             style={{
@@ -118,6 +148,7 @@ const LoginPage = ({ checkAuthentication }) => {
             <div className={styles.formName}>Login</div>
             <form className="form-body" onSubmit={handleSubmit}>
               {errors.length > 0 && (
+                // Display login errors (if any)
                 <div className={styles.errorContainerLogin}>
                   <div className={styles.errorTitle}></div>
                   <ul className={styles.no_bullets}>
@@ -149,12 +180,15 @@ const LoginPage = ({ checkAuthentication }) => {
                   className={styles.showPasswordButton}
                   onClick={toggleShowPassword}
                 >
+                  {/* Show/hide password icon */}
                   {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
                 </button>
               </div>
+              {/* Submit and "Forgot Password" buttons */}
               <button type="submit" className={styles.btn}>
                 submit
               </button>
+
               <button
                 type="button"
                 className={styles.btn}

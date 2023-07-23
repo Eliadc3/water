@@ -3,12 +3,16 @@ import styles from "../css/UserForm.module.css";
 import axios from "axios";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 
+// The RegisterPage component is a form that allows admin users to register or edit user information,
+// including username, email, first name, last name, password, and admin status.
+
 const RegisterPage = ({
   onSuccess,
   onClose,
   selectedUser,
   setNotification,
 }) => {
+  // State to manage the form input fields
   const [username, setUsername] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -16,12 +20,18 @@ const RegisterPage = ({
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [admin, setAdmin] = useState(false);
+
+  // Ref to the form element
   const formRef = useRef(null);
+
+  // State to toggle showing/hiding the password fields
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
 
+  // State to store validation errors (if any)
   const [errors, setErrors] = useState([]);
 
+  // Update the state with the data of the selected user (if provided)
   useEffect(() => {
     if (selectedUser) {
       setUsername(selectedUser.username);
@@ -32,9 +42,11 @@ const RegisterPage = ({
     }
   }, [selectedUser]);
 
+  // Handle form input changes
   const handleInputChange = (event) => {
     const { id, value } = event.target;
 
+    // Update the corresponding state based on the input id
     if (id === "username") {
       setUsername(value);
     }
@@ -55,6 +67,7 @@ const RegisterPage = ({
     }
   };
 
+  // Handle checkbox change for admin role
   const handleAdminChange = (event) => {
     const { checked, id } = event.target;
     if (id === "admin") {
@@ -62,6 +75,7 @@ const RegisterPage = ({
     }
   };
 
+  // Handle form submission for user registration or update
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -102,6 +116,8 @@ const RegisterPage = ({
           }
         );
       }
+
+      // Handle the response after user creation/update
       if (res.status === 201) {
         onClose(); //Close the register form
         setNotification("User updated successfully.");
@@ -118,13 +134,16 @@ const RegisterPage = ({
     }
   };
 
+  // Handle closing the registration form
   const handleCloseForm = () => {
     onClose(); // Call the onClose prop to close the form in the parent component
   };
 
+  // Toggle showing/hiding the password field
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+  // Toggle showing/hiding the confirm password field
   const toggleShowPassword2 = () => {
     setShowPassword2(!showPassword2);
   };
@@ -135,6 +154,7 @@ const RegisterPage = ({
         {selectedUser ? "Edit User" : "Create User"}
       </div>
       <form className="form-body" onSubmit={handleSubmit}>
+        {/* Display errors (if any) */}
         {errors.length > 0 && (
           <div className={styles.errorContainer}>
             <div className={styles.errorTitle}>
@@ -147,6 +167,7 @@ const RegisterPage = ({
             </ul>
           </div>
         )}
+        {/* Input field for username */}
         <div className="username">
           <input
             type="text"
@@ -158,6 +179,7 @@ const RegisterPage = ({
             required
           />
         </div>
+        {/* Input field for email */}
         <div className="email">
           <input
             type="text"
@@ -169,6 +191,7 @@ const RegisterPage = ({
             required
           />
         </div>
+        {/* Input field for first name */}
         <div className="firstname">
           <input
             type="text"
@@ -180,6 +203,7 @@ const RegisterPage = ({
             required
           />
         </div>
+        {/* Input field for last name */}
         <div className="lastname">
           <input
             type="text"
@@ -191,8 +215,10 @@ const RegisterPage = ({
             required
           />
         </div>
+        {/* Render password fields only for new user registration */}
         {!selectedUser && (
           <div className={styles.passwordContainer}>
+            {/* Input field for password */}
             <div className="password">
               <input
                 type={showPassword ? "text" : "password"}
@@ -213,6 +239,7 @@ const RegisterPage = ({
             </div>
           </div>
         )}
+        {/* Input field for password confirmation */}
         {!selectedUser && (
           <div className={styles.passwordContainer}>
             <div className="password2">
@@ -235,7 +262,7 @@ const RegisterPage = ({
             </div>
           </div>
         )}
-
+        {/* Input field for admin checkbox */}
         <div>
           <label htmlFor="admin">
             <input
@@ -248,6 +275,7 @@ const RegisterPage = ({
             Create as Admin
           </label>
         </div>
+        {/* Submit and cancel buttons */}
         <button type="submit" className={styles.btn}>
           {selectedUser ? "Save Changes" : "Create User"}
         </button>

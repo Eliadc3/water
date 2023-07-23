@@ -3,11 +3,19 @@ import axios from "axios";
 import styles from "../css/UserForm.module.css";
 import notifStyles from "../css/Notifications.module.css";
 
-const PasswordResetForm = () => {
+// The `PasswordResetRequest` component is a form that allows users to request a password reset by
+// entering their email.
+const PasswordResetRequest = () => {
+  // State to manage user's email input
   const [email, setEmail] = useState("");
+
+  // State for displaying notification (success message)
   const [notification, setNotification] = useState(null);
+
+  // State to store errors (if any)
   const [errors, setErrors] = useState([]);
 
+  // Function to handle form submission (password reset request)
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -16,7 +24,9 @@ const PasswordResetForm = () => {
         "http://localhost:5000/users/request-password-reset",
         { email },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
       setErrors([]);
@@ -34,6 +44,7 @@ const PasswordResetForm = () => {
 
   return (
     <div>
+      {/* Display notification (success message) */}
       {notification && (
         <div className={notifStyles.notificationContainer}>
           <div className={notifStyles.notificationBox}>
@@ -51,6 +62,7 @@ const PasswordResetForm = () => {
       <div className={styles.loginForm}>
         <div className={styles.formName}>Reset Password</div>
         <form className="form-body" onSubmit={handleSubmit}>
+          {/* Display errors (if any) */}
           {errors.length > 0 && (
             <div className={styles.errorContainer}>
               <div className={styles.errorTitle}>
@@ -63,6 +75,7 @@ const PasswordResetForm = () => {
               </ul>
             </div>
           )}
+          {/* Input field for user's email */}
           <div className="email">
             <input
               type="email"
@@ -74,6 +87,7 @@ const PasswordResetForm = () => {
             />
           </div>
           <div>
+            {/* Submit button for requesting password reset */}
             <button type="submit" className={styles.btn}>
               Reset Password
             </button>
@@ -84,4 +98,4 @@ const PasswordResetForm = () => {
   );
 };
 
-export default PasswordResetForm;
+export default PasswordResetRequest;

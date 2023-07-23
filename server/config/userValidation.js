@@ -1,14 +1,20 @@
+// The code contains functions to validate registration input, update form input, and change password
+// input.
+
 const validator = require("email-validator");
 
+// Function to check if a string contains numbers
 function containsNumbers(input) {
   return /\d/.test(input);
 }
 
+// Function to validate if an email address is in a valid format
 const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
+// Function to validate user registration input data
 function validateRegistrationInput(
   username,
   firstname,
@@ -18,9 +24,12 @@ function validateRegistrationInput(
   password2
 ) {
   let errors = [];
+
+  // Trim leading and trailing spaces from username and email
   username = username.trim();
   email = email.trim();
-  // Check if there is input
+
+  // Check if all required fields are filled
   if (
     !username ||
     !email ||

@@ -11,16 +11,27 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import DeleteConfirmationForm from "./DeleteConfirmationPage";
 
+// The Users component is a component that displays a table of users, allows for adding, editing,
+// and deleting users, and provides forms for registering new users and changing user passwords.
+
 const Users = () => {
+  // State to store user data fetched from the server
   const [usersData, setUsersData] = useState([]);
+
+  // State to control the display of registration, change password, and delete confirmation forms
   const [showRegisterationForm, setShowRegisterationForm] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
+  // State to store the selected user for editing or deleting
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  // State to show notification messages
   const [notification, setNotification] = useState(null);
 
   const navigate = useNavigate();
 
+  // Function to check authentication status and redirect to login page if not authenticated
   const checkAuthentication = () => {
     const token = Cookies.get("token");
     const admin = Cookies.get("admin");
@@ -29,6 +40,8 @@ const Users = () => {
       navigate("/login");
     }
   };
+
+  // Check authentication status and fetch user data on component mount
   useEffect(() => {
     const fetchDataAndCheckAuthentication = async () => {
       await checkAuthentication();
@@ -38,6 +51,7 @@ const Users = () => {
     fetchDataAndCheckAuthentication();
   }, []);
 
+  // Set a timer to automatically clear notifications after 5 seconds
   useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => {
@@ -47,6 +61,7 @@ const Users = () => {
     }
   }, [notification]);
 
+  // Function to fetch user data from the server
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:5000/users/get-users");
@@ -59,21 +74,29 @@ const Users = () => {
     }
   };
 
+  // Function to add a new user
   const handleAddUser = () => {
     setSelectedUser(null);
     setShowRegisterationForm(true);
   };
 
+  // Function to close the registration form
   const handleCloseRegistrationForm = () => {
     setShowRegisterationForm(false);
   };
 
+  // Function to handle user edit
   const handleEditUser = (user) => {
     setSelectedUser(user);
     setShowRegisterationForm(true);
   };
+
+  // Function to handle user edit completion
   const handleEditComplete = async ({ value, columnId, rowId }) => {
-    const updatedUser = { ...usersData[rowId], [columnId]: value };
+    const updatedUser = {
+      ...usersData[rowId],
+      [columnId]: value,
+    };
     try {
       await axios.post(
         `http://localhost:5000/users/update/${updatedUser._id}`,
@@ -92,11 +115,13 @@ const Users = () => {
     }
   };
 
+  // Function to handle user delete
   const handleDeleteUser = async (user) => {
     setSelectedUser(user);
     setShowDeleteConfirmation(true);
   };
 
+  // Function to handle user delete confirmation
   const handleConfirmDelete = async (confirm) => {
     if (confirm && selectedUser) {
       try {
@@ -113,15 +138,18 @@ const Users = () => {
     setShowDeleteConfirmation(false);
   };
 
+  // Function to handle changing user password
   const handleChangePassword = (user) => {
     setSelectedUser(user);
     setShowChangePasswordForm(true);
   };
 
+  // Function to handle changing user password cancel
   const handleChangePasswordCancel = () => {
     setShowChangePasswordForm(false);
   };
 
+  // Function to handle changing user password completion
   const handleChangePasswordComplete = async (
     user,
     oldPassword,
@@ -146,15 +174,24 @@ const Users = () => {
     }
   };
 
+  // Configuration for the ReactDataGrid columns
   const customersGrid = [
-    { name: "username", header: "Username", defaultFlex: 0.6 },
+    {
+      name: "username",
+      header: "Username",
+      defaultFlex: 0.6,
+    },
     {
       name: "firstname",
       header: "First Name",
       defaultFlex: 0.6,
       editable: true,
     },
-    { name: "lastname", header: "Last Name", defaultFlex: 0.6 },
+    {
+      name: "lastname",
+      header: "Last Name",
+      defaultFlex: 0.6,
+    },
     { name: "email", header: "Email", defaultFlex: 1 },
     {
       name: "admin",
@@ -294,7 +331,6 @@ const Users = () => {
                 <div className="modal-content">
                   <DeleteConfirmationForm
                     user={selectedUser}
-                    onCancel={() => setShowDeleteConfirmation(false)}
                     onConfirm={handleConfirmDelete}
                   />
                 </div>

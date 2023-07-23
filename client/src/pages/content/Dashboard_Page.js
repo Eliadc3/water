@@ -7,14 +7,26 @@ import UploadFile from "../../components/services/UploadFile";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
+// The DashboardPage component represents a dashboard page that displays line charts based on the fetched data.
+// It allows users to select different time ranges (daily, weekly, monthly) to view the average data over that period.
+// Users can also upload a file using the "Upload File" button.
 const DashboardPage = () => {
   const navigate = useNavigate();
+
+  // State variables for chart data and baseline chart data
   const [chartData, setChartData] = useState([]);
   const [baselineChartData, setBaselineChartData] = useState([]);
+
+  // State variable for loading status
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedTimeRange, setSelectedTimeRange] = useState("");
+
+  // State variable for the selected time range
+  const [selectedTimeRange, setSelectedTimeRange] = useState("Daily");
+
+  // State variable for showing/hiding the upload form
   const [uploadForm, setUploadForm] = useState(false);
 
+  // Check authentication when the component mounts
   useEffect(() => {
     const token = Cookies.get("token");
     if (!token) {
@@ -22,15 +34,19 @@ const DashboardPage = () => {
     }
   }, []);
 
+  // Fetch data when the component mounts
   useEffect(() => {
     fetchData("http://localhost:5000/water/getdailydata");
   }, []);
 
+  // Function to fetch data from the server based on the provided URL
   const fetchData = async (url) => {
     try {
+      // Fetch data using axios
       const response = await axios.get(url);
       const data = response.data;
 
+      // Process fetched data to generate chart data
       const chartData = Object.keys(data[0].average).map((field) => ({
         chartId: field,
         series: data.map((chart) => chart.average[field]),
@@ -41,6 +57,7 @@ const DashboardPage = () => {
       setIsLoading(false);
 
       //------------------------BASELINE----------------------------------------------//
+      // Fetch baseline data
       const baselineResponse = await axios.get(
         "http://localhost:5000/water/baseline"
       );
@@ -51,6 +68,7 @@ const DashboardPage = () => {
         (key) => key !== "_id"
       );
 
+      // Create an object to hold separate arrays for each baseline chart data
       const separateArrays = {};
       for (let i = 0; i < propertyNames.length; i++) {
         const propertyName = propertyNames[i];
@@ -60,6 +78,7 @@ const DashboardPage = () => {
       }
       console.log(separateArrays);
 
+      // Create baseline chart data
       const baselineChartData = Object.keys(separateArrays).map((field) => ({
         chartId: field,
         baselineSeries: separateArrays[field],
@@ -73,6 +92,7 @@ const DashboardPage = () => {
     }
   };
 
+  // Function to handle the click event of time range buttons
   const onClickTimeRange = async (timeRange) => {
     const url =
       timeRange === "Daily"
@@ -84,22 +104,27 @@ const DashboardPage = () => {
     setSelectedTimeRange(timeRange);
   };
 
+  // Function to handle the click event of the "Upload File" button
   const onClickUploadForm = () => {
     setUploadForm(!uploadForm);
   };
 
   return (
     <div className={styles.body}>
+      {/* Render the page header */}
       <div className={styles.pageName}>
         <h2>Dashboard</h2>
       </div>
       <div className={styles.container}>
+        {/* Render the "Upload File" button */}
         <div className={styles.uploadFormbtn}>
           <button className={styles.btn} onClick={onClickUploadForm}>
             <i class="fa fa-arrow-up" aria-hidden="true" /> Upload File
           </button>
         </div>
+        {/* Render the UploadFile component if uploadForm is true */}
         <div className={styles.uploadFile}>{uploadForm && <UploadFile />}</div>
+        {/* Render charts or a loading message based on isLoading */}
         {isLoading ? (
           <h2 className={styles.renderMessage}>
             Rendering data, please wait...
@@ -108,6 +133,7 @@ const DashboardPage = () => {
           <div>
             {chartData.length !== 0 ? (
               <div className={styles.data}>
+                {/* Render time range selection */}
                 <div className={styles.timeRange}>
                   <h2>
                     Period Average:{" "}
@@ -136,6 +162,8 @@ const DashboardPage = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* Render the charts */}
                 <div className={styles.grid}>
                   {chartData.map((chart) => (
                     <Card key={chart.chartId}>
@@ -160,6 +188,7 @@ const DashboardPage = () => {
                 </div>
               </div>
             ) : (
+              // Render a message if no data is available
               <div>
                 <h2 className={styles.renderMessage}>
                   No data to display, please upload file.

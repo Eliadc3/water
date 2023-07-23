@@ -1,3 +1,11 @@
+/* This controller handles the manipulation of data from a CSV file. 
+It uses the csvtojson library to convert the CSV file into an array of JSON objects. It then performs
+several iterations of calculations and manipulations on the data, using mathematical formulas and
+conditions. The manipulated data is then saved to different models in a MongoDB database, including
+WaterModel, DailyWaterModel, WeeklyWaterModel, and MonthlyWaterModel. The function also calculates
+daily, weekly, and monthly averages of the data and saves them to their respective models. Finally,
+it returns a response with the saved data */
+
 const csv = require("csvtojson");
 const WaterModel = require("../models/Water_Import_model");
 const DailyWaterModel = require("../models/Water_Daily_model");
@@ -10,24 +18,29 @@ const multer = require("multer");
 exports.manipulations = async (req, res) => {
   try {
     // Upload:
-    // --- destination (where the file will save)
+    // Create the multer disk storage engine to handle file uploads
     const fileStorageEngine = multer.diskStorage({
       destination: (req, file, cb) => {
+        // Set the destination directory for saving the uploaded file
         cb(null, "./uploads/premanipulated");
       },
       filename: (req, file, cb) => {
+        // Set the filename for the uploaded file with a timestamp and the original filename
         cb(null, Date.now() + "-manipulated-" + file.originalname);
       },
     });
 
-    // --- create a property that saves the uploaded file and check if the file's format is csv
+    // Configure multer to handle file uploads and check if the file is in CSV format
     const upload = multer({
+      // Set the storage engine for saving the uploaded file
       storage: fileStorageEngine,
       fileFilter: (req, file, cb) => {
-        //check if the file is csv
+        // Check if the file is in CSV format
         if (file.mimetype !== "text/csv") {
+          // If the file is not a CSV file, return an error
           return cb(new Error("Only CSV files are allowed."));
         }
+        // If the file is a CSV file, allow the upload
         cb(null, true);
       },
     });
@@ -36,24 +49,24 @@ exports.manipulations = async (req, res) => {
     if (!file) {
       return res.status(400).send("Please upload a CSV file.");
     }
-    // Create an objects array from the csv file data
+    // Convert the CSV file to an array of JSON objects
     const JsonArray = await csv().fromFile(file.path);
 
-    // Check if there is already exists record in the db.
+    // Check if there are existing records in the database
     const existsRecords = await WaterModel.find({}).lean();
     const existingTimes = existsRecords.map((record) => record.Time);
 
-    // Filter the data to see if it matches the condition and doesn't have a matching Time.
+    // Filter the data to include only new records that meet the specified conditions
     const newRecords = JsonArray.filter((jsonObj) => {
       const isSystemOn = parseFloat(jsonObj.System_On_Off_bit) === 1;
       const isNewTime = !existingTimes.includes(jsonObj.Time);
       return isSystemOn && isNewTime;
     });
 
-    // filter the data to see if this is number or the record was accurate
+    // Manipulate the data and convert numeric fields from string to number
     const manipulatedData = newRecords
 
-      // parse all the data to number for the manipulations
+      // Parse all the data to number for the manipulations
       .map((jsonObj) => ({
         Time: jsonObj.Time,
         System_On_Off_bit: parseFloat(jsonObj.System_On_Off_bit),
@@ -279,10 +292,10 @@ exports.manipulations = async (req, res) => {
       };
     });
 
-    // calculate daily average
+    // Calculate daily average
     const dailyAverages = {};
     sixthIterationLoop.forEach((record) => {
-      // convert the time field to date object
+      // Convert the time field to date object
       const date = moment(record.Time, "DD-MM-YYYY HH:mm").format("DD-MM-YYYY");
       if (!dailyAverages[date]) {
         dailyAverages[date] = {
@@ -318,10 +331,10 @@ exports.manipulations = async (req, res) => {
 
     const dailyResults = await DailyWaterModel.insertMany(dailyAveragesData);
 
-    // calculate weekly average
+    // Calculate weekly average
     const weeklyAverages = {};
     sixthIterationLoop.forEach((record) => {
-      // convert the time field to date object
+      // Convert the time field to date object
       const date = moment(record.Time, "DD-MM-YYYY HH:mm").format("DD-MM-YYYY");
       const weekStartDate = moment(date, "DD-MM-YYYY")
         .startOf("isoWeek")
@@ -363,10 +376,10 @@ exports.manipulations = async (req, res) => {
 
     const weeklyResults = await WeeklyWaterModel.insertMany(weeklyAveragesData);
 
-    // calculate monthly average
+    // Calculate monthly average
     const monthlyAverages = {};
     sixthIterationLoop.forEach((record) => {
-      // convert the time field to date object
+      // Convert the time field to date object
       const date = moment(record.Time, "DD-MM-YYYY HH:mm").format("DD-MM-YYYY");
       const monthStartDate = moment(date, "DD-MM-YYYY")
         .startOf("month")
@@ -410,7 +423,7 @@ exports.manipulations = async (req, res) => {
       monthlyAveragesData
     );
 
-    // Save all the data from the csv file in object by the schema
+    // Save all the data from the CSV file in the database using the WaterModel schema
     const results = await WaterModel.insertMany(sixthIterationLoop);
     return res.status(201).json({
       message: "Data successfully saved.",

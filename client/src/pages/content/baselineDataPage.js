@@ -15,7 +15,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
+// BaselineData component provides a page for managing baseline data,
+// allowing admin users to edit and save the data and displaying relevant notifications for feedback.
 const BaselineData = () => {
+  // State variables to hold baseline data and input values for each parameter.
   const [baselineData, setBaselineData] = useState([]);
   const [CIT_01, setCIT_01] = useState("");
   const [FIT_01, setFIT_01] = useState("");
@@ -29,9 +32,12 @@ const BaselineData = () => {
   const [TIT_01, setTIT_01] = useState("");
   const [CIT_02, setCIT_02] = useState("");
 
+  // State variable to show notifications (success/failure).
   const [notification, setNotification] = useState(null);
+  // Create a navigate function to redirect to other pages.
   const navigate = useNavigate();
 
+  // Function to check if the user is authenticated as an admin.
   const checkAuthentication = () => {
     const token = Cookies.get("token");
     const admin = Cookies.get("admin");
@@ -40,6 +46,8 @@ const BaselineData = () => {
       navigate("/login");
     }
   };
+
+  // On component mount, check authentication and fetch baseline data.
   useEffect(() => {
     const fetchDataAndCheckAuthentication = async () => {
       await checkAuthentication();
@@ -49,6 +57,7 @@ const BaselineData = () => {
     fetchDataAndCheckAuthentication();
   }, []);
 
+  // Set up a timer for notification dismissal.
   useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => {
@@ -58,8 +67,10 @@ const BaselineData = () => {
     }
   }, [notification]);
 
+  // Function to handle the data submission.
   const handleDataSubmit = async () => {
     try {
+      // Create a formData object with all the parameter values.
       const formData = {
         CIT_01,
         FIT_01,
@@ -73,20 +84,25 @@ const BaselineData = () => {
         TIT_01,
         CIT_02,
       };
+
+      // Make a POST request to save the data.
       const response = await axios.post(
         "http://localhost:5000/water/baseline/manipulations",
         formData
       );
+
+      // Set a success notification.
       setNotification("Data saved successfully.");
 
       console.log(response.data.message);
     } catch (error) {
       console.error("Error saving data: ", error);
-      // Display an error notification
+      // Set an error notification.
       setNotification("Error saving data. Please try again.");
     }
   };
 
+  // Function to fetch baseline data.
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -94,6 +110,8 @@ const BaselineData = () => {
       );
       const updatedBaselineData = response.data[0];
       setBaselineData(updatedBaselineData);
+
+      // Set the state for each parameter with the fetched data.
       setCIT_01(updatedBaselineData.CIT_01);
       setFIT_01(updatedBaselineData.FIT_01);
       setFIT_02(updatedBaselineData.FIT_02);
@@ -113,15 +131,19 @@ const BaselineData = () => {
 
   return (
     <div>
+      {/* Render the page header */}
       <div className={styles.pageName}>
         <h2>Baseline</h2>
       </div>
+      {/* Render the "Save" button for data submission */}
       <button className={styles.btn} onClick={handleDataSubmit}>
         Save
       </button>
+      {/* Render the notification if available */}
       {notification && (
         <div className={notifStyles.notificationContainer}>
           <div className={notifStyles.notificationBox}>
+            {/* Render different styles for success and error notifications */}
             {notification === "Data saved successfully." ? (
               <div
                 className={`${notifStyles.notification} ${
@@ -142,6 +164,7 @@ const BaselineData = () => {
           </div>
         </div>
       )}
+      {/* Render the table with input fields for editing baseline data */}
       <div>
         <TableContainer>
           <Table>
@@ -159,6 +182,7 @@ const BaselineData = () => {
               </TableRow>
             </TableHead>
             <TableBody>
+              {/* Render rows for each parameter with input fields */}
               <TableRow>
                 <TableCell>Stage 1 - Feed conductivity</TableCell>
                 <TableCell>CIT_01</TableCell>
@@ -167,6 +191,7 @@ const BaselineData = () => {
                     color: "#FFFFFF",
                   }}
                 >
+                  {/* Render the input field for each parameter */}
                   <TextField
                     type="text"
                     value={CIT_01}
